@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Segoe UI", sans-serif;
+  --color-brand-50: #eef8ff;
+  --color-brand-100: #d9efff;
+  --color-brand-200: #bce3ff;
+  --color-brand-300: #8ed3ff;
+  --color-brand-400: #59b8ff;
+  --color-brand-500: #3398ff;
+  --color-brand-600: #1b78f5;
+  --color-brand-700: #1461e1;
+  --color-brand-800: #174eb6;
+  --color-brand-900: #19458f;
+}
+
+@layer base {
+  * {
+    @apply border-slate-200;
+  }
+
+  body {
+    @apply m-0 min-w-80 bg-slate-50 font-sans text-slate-900 antialiased;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-color: #cbd5e1 transparent;
+    scrollbar-width: thin;
+  }
+}
