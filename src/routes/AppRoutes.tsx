@@ -4,6 +4,7 @@ import ProtectedRoute from './ProtectedRoute'
 import LoginPage from '../pages/auth/LoginPage'
 import DashboardPage from '../pages/dashboard/DashboardPage'
 import StudentsPage from '../pages/students/StudentsPage'
+import StudentCreatePage from '../pages/students/StudentCreatePage'
 import StudentEditPage from '../pages/students/StudentEditPage'
 import StudentProfilePage from '../pages/students/StudentProfilePage'
 import AttendancePage from '../pages/students/AttendancePage'
@@ -23,6 +24,7 @@ function AppRoutes() {
           <Route index element={<DashboardPage />} />
 
           <Route path="students" element={<StudentsPage />} />
+          <Route path="students/create" element={<StudentCreatePage />} />
           <Route path="students/:classId/:studentId/edit" element={<StudentEditPage />} />
           <Route path="students/:classId/:studentId/profile" element={<StudentProfilePage />} />
           <Route path="attendance" element={<AttendancePage />} />

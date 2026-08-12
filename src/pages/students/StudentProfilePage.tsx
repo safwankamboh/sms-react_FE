@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, Edit2, User } from 'lucide-react'
-import axiosClient from '../../api/axiosClient'
-import type { Student } from '../../types'
+import { ArrowLeft, Edit2 } from 'lucide-react'
+import { useGetStudentProfileQuery } from '../../store/api/studentsApi'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import Badge from '../../components/common/Badge'
@@ -22,18 +21,16 @@ function Field({ label, value }: { label: string; value: string | number | null 
 function StudentProfilePage() {
   const { classId, studentId } = useParams()
   const navigate = useNavigate()
-  const [student, setStudent] = useState<Student | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { data: student, isFetching: loading, isError } = useGetStudentProfileQuery({ classId: Number(classId), studentId: Number(studentId) })
 
   useEffect(() => {
-    axiosClient.get(`/student/profile/${classId}/student/${studentId}`)
-      .then(({ data }) => setStudent(data?.data ?? data))
-      .catch(() => navigate('/students'))
-      .finally(() => setLoading(false))
-  }, [classId, studentId, navigate])
+    if (isError) navigate('/students')
+  }, [isError, navigate])
 
   if (loading) return <Loader fullPage />
   if (!student) return null
+
+  const fullName = `${student.first_name} ${student.last_name}`
 
   return (
     <div className="space-y-6">
@@ -51,14 +48,14 @@ function StudentProfilePage() {
       <Card as="div" className="p-6">
         <div className="flex items-start gap-5">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-xl font-bold text-white">
-            {getInitials(student.user?.name ?? 'S')}
+            {getInitials(fullName)}
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">{student.user?.name ?? '—'}</h2>
+            <h2 className="text-xl font-bold text-slate-900">{fullName}</h2>
             <p className="text-sm text-slate-500">{student.user?.email ?? '—'}</p>
             <div className="mt-2 flex flex-wrap gap-2">
-              {student.newclass && <Badge>{student.newclass.class_name}</Badge>}
-              {student.class_section && <Badge variant="info">{student.class_section.section_name}</Badge>}
+              {student.class && <Badge>{student.class.class_name}</Badge>}
+              {student.section && <Badge variant="info">{student.section.section_name}</Badge>}
               {student.gender && <Badge variant="default">{student.gender}</Badge>}
             </div>
           </div>
@@ -69,21 +66,32 @@ function StudentProfilePage() {
         <Card as="div" className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Personal Information</h3>
           <dl className="grid grid-cols-2 gap-4">
-            <Field label="Roll No" value={student.roll_no} />
             <Field label="Date of Birth" value={formatDate(student.dob)} />
             <Field label="Gender" value={student.gender} />
-            <Field label="Phone" value={student.phone} />
-            <Field label="Father Name" value={student.father_name} />
+            <Field label="Religion" value={student.religion} />
+            <Field label="Nationality" value={student.nationality} />
+            <Field label="Contact Number" value={student.contact_number} />
             <Field label="Address" value={student.address} />
+          </dl>
+        </Card>
+
+        <Card as="div" className="p-5 sm:p-6">
+          <h3 className="mb-4 font-semibold text-slate-900">Guardian Information</h3>
+          <dl className="grid grid-cols-2 gap-4">
+            <Field label="Guardian" value={student.guardian} />
+            <Field label="Relation" value={student.relation} />
+            <Field label="Occupation" value={student.occupation} />
+            <Field label="Guardian NIC" value={student.national_id} />
           </dl>
         </Card>
 
         <Card as="div" className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Academic Information</h3>
           <dl className="grid grid-cols-2 gap-4">
-            <Field label="Class" value={student.newclass?.class_name} />
-            <Field label="Section" value={student.class_section?.section_name} />
-            <Field label="Academic Year" value={student.academic_year?.year} />
+            <Field label="Class" value={student.class?.class_name} />
+            <Field label="Section" value={student.section?.section_name} />
+            <Field label="Academic Year" value={student.academicYear?.name} />
+            <Field label="Previous School" value={student.last_school} />
             <Field label="Enrolled On" value={formatDate(student.created_at)} />
           </dl>
         </Card>

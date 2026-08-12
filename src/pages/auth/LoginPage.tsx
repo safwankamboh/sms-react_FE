@@ -1,21 +1,26 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GraduationCap, Mail, Lock } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { login } from '../../store/slices/authSlice'
+import { useLoginMutation } from '../../store/api/authApi'
+import { useAuth } from '../../context/AuthContext'
 import { APP_NAME } from '../../utils/constants'
 
 function LoginPage() {
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { loading, error } = useAppSelector((s) => s.auth)
+  const { setSession } = useAuth()
+  const [login, { isLoading, error }] = useLoginMutation()
 
   const [form, setForm] = useState({ email: '', password: '' })
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    const result = await dispatch(login(form))
-    if (login.fulfilled.match(result)) navigate('/', { replace: true })
+    try {
+      const result = await login(form).unwrap()
+      setSession({ user: result.user, token: result.accessToken, activeAcademicYear: result.activeAcademicYear })
+      navigate('/', { replace: true })
+    } catch {
+      // error is surfaced below via the mutation's `error` state
+    }
   }
 
   return (
@@ -70,15 +75,17 @@ function LoginPage() {
             </div>
 
             {error && (
-              <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 border border-rose-200">{error}</p>
+              <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700 border border-rose-200">
+                {('message' in error && error.message) || 'Login failed.'}
+              </p>
             )}
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className="w-full rounded-xl bg-slate-900 py-2.5 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? 'Signing in…' : 'Sign in'}
+              {isLoading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
         </div>

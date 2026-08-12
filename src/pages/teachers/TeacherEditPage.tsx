@@ -1,40 +1,38 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import { useAppDispatch } from '../../store/hooks'
-import { updateTeacher } from '../../store/slices/teachersSlice'
-import axiosClient from '../../api/axiosClient'
-import type { Teacher } from '../../types'
+import { useGetTeacherEditQuery, useUpdateTeacherMutation } from '../../store/api/teachersApi'
 import { FormWrapper, Input, Select, DatePicker, Button, PageHeader, Loader } from '../../components/common'
 import { GENDERS } from '../../utils/constants'
 
 function TeacherEditPage() {
   const { teacherId } = useParams()
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [form, setForm] = useState({ name: '', email: '', designation: '', qualification: '', dob: '', gender: '', phone: '', address: '', salary: '', joining_date: '' })
 
+  const { data: teacher, isFetching: loading, isError } = useGetTeacherEditQuery(Number(teacherId))
+  const [updateTeacher, { isLoading: saving }] = useUpdateTeacherMutation()
+
   useEffect(() => {
-    axiosClient.get(`/teacher/edit/${teacherId}`)
-      .then(({ data }) => {
-        const t: Teacher = data?.data ?? data
-        setForm({ name: t.user?.name ?? '', email: t.user?.email ?? '', designation: t.designation ?? '', qualification: t.qualification ?? '', dob: t.dob ?? '', gender: t.gender ?? '', phone: t.phone ?? '', address: t.address ?? '', salary: t.salary ? String(t.salary) : '', joining_date: t.joining_date ?? '' })
-      })
-      .catch(() => navigate('/teachers'))
-      .finally(() => setLoading(false))
-  }, [teacherId, navigate])
+    if (isError) navigate('/teachers')
+  }, [isError, navigate])
+
+  useEffect(() => {
+    if (!teacher) return
+    setForm({ name: teacher.user?.username ?? '', email: teacher.user?.email ?? '', designation: teacher.designation ?? '', qualification: teacher.qualification ?? '', dob: teacher.dob ?? '', gender: teacher.gender ?? '', phone: teacher.phone ?? '', address: teacher.address ?? '', salary: teacher.salary ? String(teacher.salary) : '', joining_date: teacher.joining_date ?? '' })
+  }, [teacher])
 
   const f = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((p) => ({ ...p, [k]: e.target.value }))
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true); setError('')
-    const result = await dispatch(updateTeacher({ teacherId: Number(teacherId), payload: form as Record<string, unknown> }))
-    setSaving(false)
-    if (updateTeacher.fulfilled.match(result)) navigate(`/teachers/${teacherId}/profile`)
-    else setError((result.payload as { message?: string })?.message ?? 'Update failed.')
+    e.preventDefault(); setError('')
+    try {
+      await updateTeacher({ teacherId: Number(teacherId), payload: form }).unwrap()
+      navigate(`/teachers/${teacherId}/profile`)
+    } catch (err) {
+      setError((err as { message?: string })?.message ?? 'Update failed.')
+    }
   }
 
   if (loading) return <Loader fullPage />

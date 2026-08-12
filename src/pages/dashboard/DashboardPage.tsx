@@ -1,10 +1,9 @@
-import { useEffect } from 'react'
 import { GraduationCap, Users, BookOpen, CalendarCheck, TrendingUp, School, DollarSign } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { fetchStudents } from '../../store/slices/studentsSlice'
-import { fetchTeachers } from '../../store/slices/teachersSlice'
-import { fetchGlobalClasses } from '../../store/slices/classesSlice'
-import { fetchCourses } from '../../store/slices/coursesSlice'
+import { useGetStudentsQuery } from '../../store/api/studentsApi'
+import { useGetTeachersQuery } from '../../store/api/teachersApi'
+import { useGetGlobalClassesQuery } from '../../store/api/classesApi'
+import { useGetCoursesQuery } from '../../store/api/coursesApi'
+import { useAuth } from '../../context/AuthContext'
 import Card from '../../components/common/Card'
 import PageHeader from '../../components/common/PageHeader'
 import Badge from '../../components/common/Badge'
@@ -28,32 +27,24 @@ function StatCard({ label, value, icon: Icon, sub }: { label: string; value: str
 }
 
 function DashboardPage() {
-  const dispatch = useAppDispatch()
-  const students = useAppSelector((s) => s.students.pagination.total)
-  const teachers = useAppSelector((s) => s.teachers.pagination.total)
-  const classes = useAppSelector((s) => s.classes.classes.length)
-  const courses = useAppSelector((s) => s.courses.pagination.total)
-  const user = useAppSelector((s) => s.auth.user)
-
-  useEffect(() => {
-    dispatch(fetchStudents(1))
-    dispatch(fetchTeachers(1))
-    dispatch(fetchGlobalClasses())
-    dispatch(fetchCourses(1))
-  }, [dispatch])
+  const { user } = useAuth()
+  const { data: studentsPage } = useGetStudentsQuery(1)
+  const { data: teachersPage } = useGetTeachersQuery(1)
+  const { data: classes = [] } = useGetGlobalClassesQuery()
+  const { data: coursesPage } = useGetCoursesQuery(1)
 
   const stats = [
-    { label: 'Total Students', value: students, icon: GraduationCap, sub: 'enrolled this year' },
-    { label: 'Total Teachers', value: teachers, icon: Users, sub: 'active staff' },
-    { label: 'Total Classes', value: classes, icon: School, sub: 'across all grades' },
-    { label: 'Total Courses', value: courses, icon: BookOpen, sub: 'in curriculum' },
+    { label: 'Total Students', value: studentsPage?.total ?? 0, icon: GraduationCap, sub: 'enrolled this year' },
+    { label: 'Total Teachers', value: teachersPage?.total ?? 0, icon: Users, sub: 'active staff' },
+    { label: 'Total Classes', value: classes.length, icon: School, sub: 'across all grades' },
+    { label: 'Total Courses', value: coursesPage?.total ?? 0, icon: BookOpen, sub: 'in curriculum' },
   ]
 
   return (
     <div className="space-y-6">
       <PageHeader
         eyebrow="Dashboard"
-        title={`Welcome back, ${user?.name?.split(' ')[0] ?? 'Admin'}`}
+        title={`Welcome back, ${user?.username ?? 'Admin'}`}
         description="Here's an overview of your school management system."
         actions={<Badge variant="success">System Active</Badge>}
       />
@@ -95,7 +86,7 @@ function DashboardPage() {
           <h2 className="mb-4 text-base font-semibold text-slate-900">System Info</h2>
           <dl className="space-y-3">
             {[
-              { term: 'Logged In As', desc: user?.name ?? '—' },
+              { term: 'Logged In As', desc: user?.username ?? '—' },
               { term: 'Email', desc: user?.email ?? '—' },
               { term: 'Role', desc: user?.role_id === 1 ? 'Administrator' : user?.role_id === 2 ? 'Teacher' : 'Student' },
               { term: 'API Endpoint', desc: import.meta.env.VITE_API_BASE_URL ?? 'http://sms.test/api/v1' },

@@ -8,7 +8,11 @@ export const APP_NAME = 'EduCore'
 export const GENDERS = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' },
-  { value: 'other', label: 'Other' },
+]
+
+export const RELIGIONS = [
+  { value: 'muslim', label: 'Muslim' },
+  { value: 'non-muslim', label: 'Non-Muslim' },
 ]
 
 export const DAYS_OF_WEEK = [

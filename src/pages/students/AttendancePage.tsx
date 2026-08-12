@@ -1,56 +1,42 @@
-import { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { fetchGlobalClasses, fetchSections } from '../../store/slices/classesSlice'
-import axiosClient from '../../api/axiosClient'
-import type { Student, AttendanceRecord } from '../../types'
-import { Card, PageHeader, Select, Button, Badge, Loader } from '../../components/common'
+import { useState } from 'react'
+import { useGetGlobalClassesQuery, useGetSectionsQuery } from '../../store/api/classesApi'
+import { useLazyGetStudentsByClassQuery, useSubmitAttendanceMutation } from '../../store/api/studentsApi'
+import type { AttendanceRecord } from '../../types'
+import { Card, PageHeader, Select, Button, Loader } from '../../components/common'
 import { formatDate } from '../../utils/helpers'
 
 type Status = 'present' | 'absent' | 'late'
 
-const statusVariants: Record<Status, 'success' | 'danger' | 'warning'> = {
-  present: 'success', absent: 'danger', late: 'warning',
-}
-
 function AttendancePage() {
-  const dispatch = useAppDispatch()
-  const { classes, sections } = useAppSelector((s) => s.classes)
   const [classId, setClassId] = useState('')
   const [sectionId, setSectionId] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
-  const [students, setStudents] = useState<Student[]>([])
   const [attendance, setAttendance] = useState<Record<number, Status>>({})
-  const [loading, setLoading] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
 
-  useEffect(() => { dispatch(fetchGlobalClasses()) }, [dispatch])
+  const { data: classes = [] } = useGetGlobalClassesQuery()
+  const { data: sections = [] } = useGetSectionsQuery(Number(classId), { skip: !classId })
+  const [loadStudents, { data: students = [], isFetching: loading }] = useLazyGetStudentsByClassQuery()
+  const [submitAttendance, { isLoading: submitting }] = useSubmitAttendanceMutation()
 
   const handleClassChange = (val: string) => {
-    setClassId(val); setSectionId(''); setStudents([]); setAttendance({})
-    if (val) dispatch(fetchSections(Number(val)))
+    setClassId(val); setSectionId(''); setAttendance({})
   }
 
-  const loadStudents = async () => {
+  const handleLoadStudents = async () => {
     if (!classId) return
-    setLoading(true)
-    try {
-      const { data } = await axiosClient.get(`/student/students?class_id=${classId}`)
-      const list: Student[] = Array.isArray(data) ? data : (data?.data ?? [])
-      setStudents(list)
-      const init: Record<number, Status> = {}
-      list.forEach((s) => { init[s.id] = 'present' })
-      setAttendance(init)
-    } finally { setLoading(false) }
+    const list = await loadStudents(Number(classId)).unwrap()
+    const init: Record<number, Status> = {}
+    list.forEach((s) => { init[s.id] = 'present' })
+    setAttendance(init)
   }
 
   const handleSubmit = async () => {
-    setSubmitting(true)
     const records: AttendanceRecord[] = Object.entries(attendance).map(([id, status]) => ({
       student_id: Number(id), status,
     }))
-    await axiosClient.post(`/student/attendance-monitring/attendance-sheet/class/${classId}/attendance-submit`, { date, class_id: classId, section_id: sectionId, attendance: records })
-    setSubmitting(false); setSuccess(true)
+    await submitAttendance({ classId, sectionId, date, attendance: records }).unwrap()
+    setSuccess(true)
     setTimeout(() => setSuccess(false), 3000)
   }
 
@@ -71,7 +57,7 @@ function AttendancePage() {
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-100" />
           </div>
           <div className="flex items-end">
-            <Button onClick={loadStudents} disabled={!classId} className="w-full">Load Students</Button>
+            <Button onClick={handleLoadStudents} disabled={!classId} className="w-full">Load Students</Button>
           </div>
         </div>
       </Card>
@@ -91,8 +77,8 @@ function AttendancePage() {
                 return (
                   <div key={student.id} className="flex items-center justify-between px-5 py-3.5">
                     <div>
-                      <p className="text-sm font-medium text-slate-900">{student.user?.name ?? '—'}</p>
-                      <p className="text-xs text-slate-500">Roll: {student.roll_no ?? '—'}</p>
+                      <p className="text-sm font-medium text-slate-900">{student.first_name} {student.last_name}</p>
+                      <p className="text-xs text-slate-500">Guardian: {student.guardian ?? '—'}</p>
                     </div>
                     <div className="flex gap-2">
                       {(['present', 'absent', 'late'] as Status[]).map((s) => (

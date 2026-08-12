@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { ArrowLeft, Edit2 } from 'lucide-react'
-import axiosClient from '../../api/axiosClient'
-import type { Teacher } from '../../types'
+import { useGetTeacherProfileQuery } from '../../store/api/teachersApi'
 import { Card, Button, Loader, PageHeader, Badge } from '../../components/common'
 import { formatDate, formatCurrency, getInitials } from '../../utils/helpers'
 
@@ -18,15 +17,11 @@ function Field({ label, value }: { label: string; value?: string | number | null
 function TeacherProfilePage() {
   const { teacherId } = useParams()
   const navigate = useNavigate()
-  const [teacher, setTeacher] = useState<Teacher | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { data: teacher, isFetching: loading, isError } = useGetTeacherProfileQuery(Number(teacherId))
 
   useEffect(() => {
-    axiosClient.get(`/teacher/profile/${teacherId}`)
-      .then(({ data }) => setTeacher(data?.data ?? data))
-      .catch(() => navigate('/teachers'))
-      .finally(() => setLoading(false))
-  }, [teacherId, navigate])
+    if (isError) navigate('/teachers')
+  }, [isError, navigate])
 
   if (loading) return <Loader fullPage />
   if (!teacher) return null
@@ -45,10 +40,10 @@ function TeacherProfilePage() {
       <Card as="div" className="p-6">
         <div className="flex items-start gap-5">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-xl font-bold text-white">
-            {getInitials(teacher.user?.name ?? 'T')}
+            {getInitials(teacher.user?.username ?? 'T')}
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">{teacher.user?.name ?? '—'}</h2>
+            <h2 className="text-xl font-bold text-slate-900">{teacher.user?.username ?? '—'}</h2>
             <p className="text-sm text-slate-500">{teacher.user?.email ?? '—'}</p>
             <div className="mt-2 flex gap-2">
               {teacher.designation && <Badge>{teacher.designation}</Badge>}

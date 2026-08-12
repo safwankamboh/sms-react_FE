@@ -1,29 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Plus, ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { fetchClasses, saveClass } from '../../store/slices/classesSlice'
-import { Table, Button, Modal, Input, PageHeader, ConfirmDialog } from '../../components/common'
+import { useGetClassesQuery, useSaveClassMutation } from '../../store/api/classesApi'
+import { Table, Button, Modal, Input, PageHeader } from '../../components/common'
 import type { Column } from '../../components/common/Table'
 import type { NewClass } from '../../types'
 import { formatDate } from '../../utils/helpers'
 
 function ClassesPage() {
-  const dispatch = useAppDispatch()
-  const { classes, loading } = useAppSelector((s) => s.classes)
+  const { data: classes = [], isFetching: loading } = useGetClassesQuery()
+  const [saveClass, { isLoading: saving }] = useSaveClassMutation()
+
   const [addOpen, setAddOpen] = useState(false)
   const [name, setName] = useState('')
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => { dispatch(fetchClasses()) }, [dispatch])
-
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true); setError('')
-    const result = await dispatch(saveClass({ class_name: name }))
-    setSaving(false)
-    if (saveClass.fulfilled.match(result)) { setAddOpen(false); setName(''); dispatch(fetchClasses()) }
-    else setError((result.payload as { message?: string })?.message ?? 'Failed.')
+    e.preventDefault(); setError('')
+    try {
+      await saveClass({ class_name: name }).unwrap()
+      setAddOpen(false); setName('')
+    } catch (err) {
+      setError((err as { message?: string })?.message ?? 'Failed.')
+    }
   }
 
   const columns: Column<NewClass>[] = [

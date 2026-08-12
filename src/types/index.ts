@@ -20,9 +20,9 @@ export interface ApiResponse<T = unknown> {
 
 export interface AuthUser {
   id: number
-  name: string
-  email: string
   role_id: number
+  username: string
+  email: string
   email_verified_at: string | null
   created_at: string
   updated_at: string
@@ -33,36 +33,38 @@ export interface LoginPayload {
   password: string
 }
 
-export interface LoginResponse {
-  token: string
-  user: AuthUser
-  message?: string
-}
-
 // ─── Class / Section ──────────────────────────────────────────────────────────
 
 export interface NewClass {
   id: number
+  sort_order: number
   class_name: string
+  deleted_at?: string | null
   created_at: string
   updated_at: string
+  classSections?: ClassSection[]
 }
 
 export interface ClassSection {
   id: number
+  sort_order: number
   class_id: number
   section_name: string
+  deleted_at?: string | null
   created_at: string
   updated_at: string
-  newclass?: NewClass
+  class?: NewClass
 }
 
 // ─── Academic Year ────────────────────────────────────────────────────────────
 
 export interface AcademicYear {
   id: number
-  year: string
-  is_default: number
+  name: string
+  code: string
+  from_date: string
+  to_date: string
+  is_active: boolean
   created_at: string
   updated_at: string
 }
@@ -71,38 +73,59 @@ export interface AcademicYear {
 
 export interface Student {
   id: number
-  user_id: number
-  class_id: number
-  section_id: number
+  user_id: number | null
   academic_year_id: number
-  roll_no: string | null
-  dob: string | null
-  gender: string | null
+  first_name: string
+  last_name: string
+  guardian: string
+  relation: string
+  occupation: string | null
+  national_id: string | null
+  dob: string
+  gender: string
+  religion: string
   address: string | null
-  phone: string | null
-  father_name: string | null
+  nationality: string
+  contact_number: string
+  class_id: number
+  class_section_id: number | null
+  last_school: string | null
+  photo: string | null
+  birth_or_nic: string | null
+  last_school_certificate: string | null
   deleted_at: string | null
   created_at: string
   updated_at: string
   user?: AuthUser
-  newclass?: NewClass
-  class_section?: ClassSection
-  academic_year?: AcademicYear
+  class?: NewClass
+  section?: ClassSection
+  academicYear?: AcademicYear
 }
 
-export interface StudentFormData {
-  name: string
+// Matches the multipart payload accepted by POST /student/save (see StudentController::saveStudent)
+export interface StudentCreateFormData {
+  first_name: string
+  last_name: string
+  guardian: string
+  relation: string
+  occupation: string
+  national_id: string
+  dob: string
+  gender: string
+  religion: string
+  address: string
+  nationality: string
+  contact_number: string
+  class_id: string
+  class_section_id: string
+  pre_school: string
+  user_name: string
   email: string
   password: string
-  class_id: string
-  section_id: string
-  academic_year_id: string
-  roll_no?: string
-  dob?: string
-  gender?: string
-  address?: string
-  phone?: string
-  father_name?: string
+  cpassword: string
+  photograph: File | null
+  nic: File | null
+  last_school_certificate: File | null
 }
 
 // ─── Teacher ──────────────────────────────────────────────────────────────────

@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Plus, Eye, Trash2, RotateCcw } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { fetchTeachers, saveTeacher, softDeleteTeacher, fetchTrashTeachers, restoreTeacher } from '../../store/slices/teachersSlice'
-import { Table, Button, Modal, Input, Select, DatePicker, PageHeader, Badge, Pagination, ConfirmDialog } from '../../components/common'
+import {
+  useGetTeachersQuery, useGetTrashTeachersQuery, useSaveTeacherMutation,
+  useSoftDeleteTeacherMutation, useRestoreTeacherMutation,
+} from '../../store/api/teachersApi'
+import { Table, Button, Modal, Input, Select, DatePicker, PageHeader, Pagination, ConfirmDialog } from '../../components/common'
 import type { Column } from '../../components/common/Table'
 import type { Teacher } from '../../types'
 import { formatDate, formatCurrency } from '../../utils/helpers'
@@ -12,40 +14,43 @@ import { GENDERS } from '../../utils/constants'
 const defaultForm = { name: '', email: '', password: '', designation: '', qualification: '', dob: '', gender: '', phone: '', address: '', salary: '', joining_date: '' }
 
 function TeachersPage() {
-  const dispatch = useAppDispatch()
-  const { list, trash, pagination, loading } = useAppSelector((s) => s.teachers)
   const [tab, setTab] = useState<'active' | 'trash'>('active')
+  const [page, setPage] = useState(1)
   const [addOpen, setAddOpen] = useState(false)
   const [form, setForm] = useState(defaultForm)
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [deleteId, setDeleteId] = useState<number | null>(null)
-  const [deleting, setDeleting] = useState(false)
 
-  useEffect(() => { dispatch(fetchTeachers(1)) }, [dispatch])
-  useEffect(() => { if (tab === 'trash') dispatch(fetchTrashTeachers()) }, [tab, dispatch])
+  const { data: teachersPage, isFetching: loadingTeachers } = useGetTeachersQuery(page)
+  const { data: trash = [], isFetching: loadingTrash } = useGetTrashTeachersQuery(undefined, { skip: tab !== 'trash' })
+  const [saveTeacher, { isLoading: saving }] = useSaveTeacherMutation()
+  const [softDeleteTeacher, { isLoading: deleting }] = useSoftDeleteTeacherMutation()
+  const [restoreTeacher] = useRestoreTeacherMutation()
+
+  const list = teachersPage?.data ?? []
 
   const f = (k: keyof typeof defaultForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((p) => ({ ...p, [k]: e.target.value }))
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setSaving(true); setError('')
-    const result = await dispatch(saveTeacher(form as Record<string, unknown>))
-    setSaving(false)
-    if (saveTeacher.fulfilled.match(result)) { setAddOpen(false); setForm(defaultForm); dispatch(fetchTeachers(1)) }
-    else setError((result.payload as { message?: string })?.message ?? 'Failed to save.')
+    e.preventDefault(); setError('')
+    try {
+      await saveTeacher(form).unwrap()
+      setAddOpen(false); setForm(defaultForm)
+    } catch (err) {
+      setError((err as { message?: string })?.message ?? 'Failed to save.')
+    }
   }
 
   const handleDelete = async () => {
     if (!deleteId) return
-    setDeleting(true)
-    await dispatch(softDeleteTeacher(deleteId))
-    setDeleting(false); setDeleteId(null)
+    await softDeleteTeacher(deleteId)
+    setDeleteId(null)
   }
 
   const columns: Column<Teacher>[] = [
     { key: 'name', header: 'Teacher', render: (t) => (
       <div>
-        <p className="font-medium text-slate-900">{t.user?.name ?? '—'}</p>
+        <p className="font-medium text-slate-900">{t.user?.username ?? '—'}</p>
         <p className="text-xs text-slate-400">{t.user?.email ?? ''}</p>
       </div>
     )},
@@ -63,10 +68,10 @@ function TeachersPage() {
   ]
 
   const trashColumns: Column<Teacher>[] = [
-    { key: 'name', header: 'Teacher', render: (t) => t.user?.name ?? '—' },
+    { key: 'name', header: 'Teacher', render: (t) => t.user?.username ?? '—' },
     { key: 'designation', header: 'Designation', render: (t) => t.designation ?? '—' },
     { key: 'actions', header: 'Actions', render: (t) => (
-      <Button size="sm" variant="secondary" icon={RotateCcw} onClick={() => dispatch(restoreTeacher(t.id)).then(() => dispatch(fetchTrashTeachers()))}>Restore</Button>
+      <Button size="sm" variant="secondary" icon={RotateCcw} onClick={() => restoreTeacher(t.id)}>Restore</Button>
     )},
   ]
 
@@ -84,11 +89,11 @@ function TeachersPage() {
 
       {tab === 'active' ? (
         <>
-          <Table columns={columns} data={list} loading={loading} emptyTitle="No teachers found" />
-          <Pagination currentPage={pagination.currentPage} lastPage={pagination.lastPage} onPageChange={(p) => dispatch(fetchTeachers(p))} total={pagination.total} from={pagination.from} to={pagination.to} />
+          <Table columns={columns} data={list} loading={loadingTeachers} emptyTitle="No teachers found" />
+          <Pagination currentPage={teachersPage?.current_page ?? 1} lastPage={teachersPage?.last_page ?? 1} onPageChange={setPage} total={teachersPage?.total ?? 0} from={teachersPage?.from ?? 0} to={teachersPage?.to ?? 0} />
         </>
       ) : (
-        <Table columns={trashColumns} data={trash} loading={loading} emptyTitle="Trash is empty" />
+        <Table columns={trashColumns} data={trash} loading={loadingTrash} emptyTitle="Trash is empty" />
       )}
 
       <Modal open={addOpen} onClose={() => setAddOpen(false)} title="Add New Teacher" size="lg"
