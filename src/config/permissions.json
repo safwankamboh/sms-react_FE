@@ -1,0 +1,136 @@
+{
+  "_readme": [
+    "Default permission matrix — NOT currently enforced by the Laravel backend.",
+    "The backend only tags users with role_id (1=Admin, 2=Teacher, 3=Student) at creation; no route, policy, or gate actually checks it today. Every authenticated user can hit every endpoint.",
+    "This file is the proposed target matrix for when that enforcement gets built (backend middleware/policies + frontend route/UI gating). Review and adjust per role/action before wiring it up.",
+    "'endpoint' fields are the real routes from routes/api.php (prefixed with /api/v1), included so each entry traces back to actual backend code."
+  ],
+
+  "roles": [
+    { "id": 1, "key": "admin", "label": "Administrator" },
+    { "id": 2, "key": "teacher", "label": "Teacher" },
+    { "id": 3, "key": "student", "label": "Student" }
+  ],
+
+  "modules": {
+
+    "auth": {
+      "label": "Authentication",
+      "actions": {
+        "signIn":       { "label": "Sign in",                    "method": "POST", "endpoint": "/auth/sign-in",        "roles": { "admin": true,  "teacher": true,  "student": true  } },
+        "refreshToken": { "label": "Refresh session token",      "method": "POST", "endpoint": "/auth/refresh-token",  "roles": { "admin": true,  "teacher": true,  "student": true  } },
+        "logout":       { "label": "Sign out",                   "method": "POST", "endpoint": "/auth/logout",         "roles": { "admin": true,  "teacher": true,  "student": true  } }
+      }
+    },
+
+    "global": {
+      "label": "Shared Lookups (class/section dropdowns)",
+      "actions": {
+        "listClasses":  { "label": "List classes (for dropdowns)",  "method": "GET", "endpoint": "/global/get-classes",              "roles": { "admin": true,  "teacher": true,  "student": false } },
+        "listSections": { "label": "List sections of a class",      "method": "GET", "endpoint": "/global/class-sections/{class_id}", "roles": { "admin": true,  "teacher": true,  "student": false } }
+      }
+    },
+
+    "students": {
+      "label": "Students",
+      "actions": {
+        "list":         { "label": "View all students",              "method": "GET",  "endpoint": "/student/students",                              "roles": { "admin": true,  "teacher": true,  "student": false } },
+        "create":       { "label": "Register a new student",         "method": "POST", "endpoint": "/student/save",                                  "roles": { "admin": true,  "teacher": false, "student": false } },
+        "viewTrash":    { "label": "View soft-deleted students",     "method": "GET",  "endpoint": "/student/trash-students-data",                   "roles": { "admin": true,  "teacher": false, "student": false } },
+        "viewEditForm": { "label": "Open a student's edit form",     "method": "GET",  "endpoint": "/student/edit/{class_id}/{student_id}",          "roles": { "admin": true,  "teacher": false, "student": false } },
+        "update":       { "label": "Update a student's record",      "method": "POST", "endpoint": "/student/update/{class_id}/{student_id}",        "roles": { "admin": true,  "teacher": false, "student": false } },
+        "viewProfile":  { "label": "View a student's profile",       "method": "GET",  "endpoint": "/student/profile/{class_id}/student/{student_id}", "roles": { "admin": true, "teacher": true, "student": "own" } },
+        "softDelete":   { "label": "Move a student to trash",        "method": "GET",  "endpoint": "/student/soft-delete/{class_id}/{student_id}",   "roles": { "admin": true,  "teacher": false, "student": false } },
+        "restore":      { "label": "Restore a trashed student",      "method": "GET",  "endpoint": "/student/restore-student/{class_id}/{student_id}", "roles": { "admin": true, "teacher": false, "student": false } }
+      }
+    },
+
+    "attendance": {
+      "label": "Attendance",
+      "actions": {
+        "mark": { "label": "Mark daily attendance for a class", "method": "POST", "endpoint": "/student/attendance-monitring/attendance-sheet/class/{class_id}/attendance-submit", "roles": { "admin": true, "teacher": true, "student": false } }
+      }
+    },
+
+    "teachers": {
+      "label": "Teachers",
+      "actions": {
+        "list":         { "label": "View all teachers",           "method": "GET",  "endpoint": "/teacher/teachers",              "roles": { "admin": true,  "teacher": false, "student": false } },
+        "create":       { "label": "Register a new teacher",      "method": "POST", "endpoint": "/teacher/save",                  "roles": { "admin": true,  "teacher": false, "student": false } },
+        "viewTrash":    { "label": "View soft-deleted teachers",  "method": "GET",  "endpoint": "/teacher/trash-data",            "roles": { "admin": true,  "teacher": false, "student": false } },
+        "viewEditForm": { "label": "Open a teacher's edit form",  "method": "GET",  "endpoint": "/teacher/edit/{teacher_id}",     "roles": { "admin": true,  "teacher": "own", "student": false } },
+        "update":       { "label": "Update a teacher's record",   "method": "POST", "endpoint": "/teacher/update/{teacher_id}",   "roles": { "admin": true,  "teacher": "own", "student": false } },
+        "viewProfile":  { "label": "View a teacher's profile",    "method": "GET",  "endpoint": "/teacher/profile/{teacher_id}",  "roles": { "admin": true,  "teacher": "own", "student": false } },
+        "softDelete":   { "label": "Move a teacher to trash",     "method": "GET",  "endpoint": "/teacher/soft-delete/{teacher_id}", "roles": { "admin": true, "teacher": false, "student": false } },
+        "restore":      { "label": "Restore a trashed teacher",   "method": "GET",  "endpoint": "/teacher/restore/{teacher_id}",  "roles": { "admin": true,  "teacher": false, "student": false } }
+      }
+    },
+
+    "classes": {
+      "label": "Classes",
+      "actions": {
+        "list":   { "label": "View all classes",  "method": "GET",  "endpoint": "/adminstrator/classes",      "roles": { "admin": true, "teacher": true,  "student": false } },
+        "create": { "label": "Add a new class",   "method": "POST", "endpoint": "/adminstrator/classes/save", "roles": { "admin": true, "teacher": false, "student": false } }
+      }
+    },
+
+    "academicYear": {
+      "label": "Academic Years",
+      "actions": {
+        "list":       { "label": "View academic years",       "method": "GET",  "endpoint": "/adminstrator/academic-years",                              "roles": { "admin": true, "teacher": true,  "student": false } },
+        "create":     { "label": "Add an academic year",      "method": "POST", "endpoint": "/adminstrator/academic-years/save",                         "roles": { "admin": true, "teacher": false, "student": false } },
+        "setDefault": { "label": "Set the active academic year", "method": "GET", "endpoint": "/adminstrator/academic-years/academic-year-set-default/{id}", "roles": { "admin": true, "teacher": false, "student": false } },
+        "viewTuitionFee": { "label": "View a class's tuition fee setup", "method": "GET", "endpoint": "/adminstrator/tuition-fee/edit/{class_id}", "roles": { "admin": true, "teacher": false, "student": false } }
+      }
+    },
+
+    "courses": {
+      "label": "Courses",
+      "actions": {
+        "list":       { "label": "View all courses",             "method": "GET",  "endpoint": "/course/courses",              "roles": { "admin": true, "teacher": true,  "student": true  } },
+        "create":     { "label": "Add a new course",              "method": "POST", "endpoint": "/course/save",                 "roles": { "admin": true, "teacher": false, "student": false } },
+        "viewTrash":  { "label": "View soft-deleted courses",     "method": "GET",  "endpoint": "/course/trash-data",           "roles": { "admin": true, "teacher": false, "student": false } },
+        "update":     { "label": "Update a course",               "method": "POST", "endpoint": "/course/update/{course_id}",   "roles": { "admin": true, "teacher": false, "student": false } },
+        "softDelete": { "label": "Move a course to trash",        "method": "GET",  "endpoint": "/course/soft-delete/{course_id}", "roles": { "admin": true, "teacher": false, "student": false } },
+        "restore":    { "label": "Restore a trashed course",      "method": "GET",  "endpoint": "/course/restore/{course_id}",  "roles": { "admin": true, "teacher": false, "student": false } }
+      }
+    },
+
+    "assignCourses": {
+      "label": "Course Assignment (class/section → course → teacher)",
+      "actions": {
+        "list":         { "label": "View course assignments by class", "method": "GET", "endpoint": "/manage-courses",                                               "roles": { "admin": true, "teacher": true,  "student": false } },
+        "viewCreateForm": { "label": "Open the assign-course form",     "method": "GET", "endpoint": "/manage-courses/create/{class_id}/{section_id}",              "roles": { "admin": true, "teacher": false, "student": false } },
+        "viewSchedule": { "label": "View a class/section's course schedule", "method": "GET", "endpoint": "/manage-courses/course-schedule/class/{class_id}/section/{section_id}", "roles": { "admin": true, "teacher": true, "student": true } }
+      }
+    },
+
+    "financial": {
+      "label": "Financial",
+      "actions": {
+        "listExpenses":       { "label": "View other expenses",             "method": "GET",  "endpoint": "/financial/other-expanses",                                                    "roles": { "admin": true, "teacher": false, "student": false } },
+        "createExpense":      { "label": "Log a new expense",               "method": "POST", "endpoint": "/financial/other-expanses/generate-expanse",                                   "roles": { "admin": true, "teacher": false, "student": false } },
+        "updateExpense":      { "label": "Update an expense",               "method": "POST", "endpoint": "/financial/other-expanses/update-expanse/{expanse_id}",                        "roles": { "admin": true, "teacher": false, "student": false } },
+        "deleteExpense":      { "label": "Delete an expense",               "method": "GET",  "endpoint": "/financial/other-expanses/delete-expanse/{expanse_id}",                        "roles": { "admin": true, "teacher": false, "student": false } },
+        "listTeacherSalaries": { "label": "View teacher salaries",          "method": "GET",  "endpoint": "/financial/teachers-salaries",                                                 "roles": { "admin": true, "teacher": false, "student": false } },
+        "generateTeacherSalary": { "label": "Generate a salary run",        "method": "POST", "endpoint": "/financial/teachers-salaries/teachers-salary-save",                            "roles": { "admin": true, "teacher": false, "student": false } },
+        "payTeacherSalary":   { "label": "Mark a teacher salary as paid",   "method": "POST", "endpoint": "/financial/teachers-salaries/teacher-salary/{teacher_id}/month/{month_id}/pay", "roles": { "admin": true, "teacher": false, "student": false } },
+        "listStudentFees":    { "label": "View a class's student fees",    "method": "GET",  "endpoint": "/financial/class/{class_id}",                                                  "roles": { "admin": true, "teacher": false, "student": "own" } },
+        "payStudentFee":      { "label": "Collect a student's fee payment", "method": "POST", "endpoint": "/financial/student-fee-collect/class/{class_id}/student/{student_id}/pay/{month_id}", "roles": { "admin": true, "teacher": false, "student": false } }
+      }
+    },
+
+    "exams": {
+      "label": "Exams",
+      "actions": {
+        "listTypes":     { "label": "View exam types",             "method": "GET",  "endpoint": "/exams",                                          "roles": { "admin": true, "teacher": true,  "student": true  } },
+        "createType":    { "label": "Add an exam type",            "method": "POST", "endpoint": "/exams/exam-typeForm/submit",                     "roles": { "admin": true, "teacher": false, "student": false } },
+        "updateType":    { "label": "Update an exam type",         "method": "POST", "endpoint": "/exams/update-exam-typeForm/submit/{exam_type_id}", "roles": { "admin": true, "teacher": false, "student": false } },
+        "deleteType":    { "label": "Delete an exam type",         "method": "GET",  "endpoint": "/exams/delete-exam-typeForm/{exam_type_id}",      "roles": { "admin": true, "teacher": false, "student": false } },
+        "viewSchedule":  { "label": "View a class's exam schedule", "method": "GET", "endpoint": "/exams/exam-schedule-class/{class_id}",           "roles": { "admin": true, "teacher": true,  "student": true  } },
+        "saveSchedule":  { "label": "Set a class's exam schedule",  "method": "POST", "endpoint": "/exams/exam-schedule-class",                     "roles": { "admin": true, "teacher": false, "student": false } }
+      }
+    }
+
+  }
+}
