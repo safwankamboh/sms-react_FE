@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useGetStudentEditQuery, useUpdateStudentMutation } from '../../store/api/studentsApi'
 import { useGetGlobalClassesQuery, useGetSectionsQuery } from '../../store/api/classesApi'
@@ -105,7 +105,7 @@ function StudentEditPage() {
       <PageHeader
         eyebrow="Students"
         title="Edit Student"
-        actions={<Button as={Link} to={`/students/${classId}/${studentId}/profile`} variant="secondary" icon={ArrowLeft}>Back</Button>}
+        actions={<Button variant="secondary" icon={<ArrowLeft size={16} />} onClick={() => navigate(`/students/${classId}/${studentId}/profile`)}>Back</Button>}
       />
 
       <FormWrapper title="Student Information" onSubmit={handleSubmit}

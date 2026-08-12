@@ -23,11 +23,11 @@ function Pagination({ currentPage, lastPage, onPageChange, total, from, to }: Pa
         </p>
       )}
       <div className="flex gap-2 sm:ml-auto">
-        <Button variant="secondary" size="sm" icon={ChevronLeft} disabled={currentPage <= 1} onClick={() => onPageChange(currentPage - 1)}>
+        <Button variant="secondary" size="sm" icon={<ChevronLeft size={14} />} disabled={currentPage <= 1} onClick={() => onPageChange(currentPage - 1)}>
           Previous
         </Button>
-        <Button variant="secondary" size="sm" icon={ChevronRight} iconPosition="right" disabled={currentPage >= lastPage} onClick={() => onPageChange(currentPage + 1)}>
-          Next
+        <Button variant="secondary" size="sm" disabled={currentPage >= lastPage} onClick={() => onPageChange(currentPage + 1)}>
+          Next <ChevronRight size={14} className="ml-2" />
         </Button>
       </div>
     </div>

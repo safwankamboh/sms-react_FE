@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useSaveStudentMutation } from '../../store/api/studentsApi'
 import { useGetGlobalClassesQuery, useGetSectionsQuery } from '../../store/api/classesApi'
@@ -91,7 +91,7 @@ function StudentCreatePage() {
         eyebrow="Academic"
         title="Create Student"
         description="Register a new student and their guardian & enrollment details."
-        actions={<Button as={Link} to="/students" variant="secondary" icon={ArrowLeft}>Back</Button>}
+        actions={<Button variant="secondary" icon={<ArrowLeft size={16} />} onClick={() => navigate('/students')}>Back</Button>}
       />
 
       <FormWrapper

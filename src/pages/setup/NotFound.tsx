@@ -1,7 +1,9 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Button from '../../components/common/Button'
 
 function NotFound() {
+  const navigate = useNavigate()
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6 text-center">
       <div>
@@ -12,9 +14,7 @@ function NotFound() {
         <p className="mx-auto mt-3 max-w-md text-slate-500">
           This page does not exist yet or will be added in a later module.
         </p>
-        <Button as={Link} to="/" className="mt-6">
-          Back to overview
-        </Button>
+        <Button className="mt-6" onClick={() => navigate('/')}>Back to overview</Button>
       </div>
     </main>
   )

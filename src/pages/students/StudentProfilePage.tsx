@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Edit2 } from 'lucide-react'
 import { useGetStudentProfileQuery } from '../../store/api/studentsApi'
 import Card from '../../components/common/Card'
@@ -39,8 +39,8 @@ function StudentProfilePage() {
         title="Student Profile"
         actions={
           <div className="flex gap-2">
-            <Button as={Link} to="/students" variant="secondary" icon={ArrowLeft}>Back</Button>
-            <Button as={Link} to={`/students/${classId}/${studentId}/edit`} icon={Edit2}>Edit</Button>
+            <Button variant="secondary" icon={<ArrowLeft size={16} />} onClick={() => navigate('/students')}>Back</Button>
+            <Button icon={<Edit2 size={16} />} onClick={() => navigate(`/students/${classId}/${studentId}/edit`)}>Edit</Button>
           </div>
         }
       />

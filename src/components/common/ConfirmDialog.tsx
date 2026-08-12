@@ -32,7 +32,14 @@ function ConfirmDialog({
       footer={
         <div className="flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose} disabled={loading}>{cancelLabel}</Button>
-          <Button variant={variant} onClick={onConfirm} loading={loading}>{confirmLabel}</Button>
+          <Button
+            variant={variant === 'danger' ? 'primary' : variant}
+            className={variant === 'danger' ? 'bg-rose-600 hover:bg-rose-700' : ''}
+            onClick={onConfirm}
+            loading={loading}
+          >
+            {confirmLabel}
+          </Button>
         </div>
       }
     >

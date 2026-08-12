@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Plus, Eye, Trash2, RotateCcw } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   useGetTeachersQuery, useGetTrashTeachersQuery, useSaveTeacherMutation,
   useSoftDeleteTeacherMutation, useRestoreTeacherMutation,
@@ -14,6 +14,7 @@ import { GENDERS } from '../../utils/constants'
 const defaultForm = { name: '', email: '', password: '', designation: '', qualification: '', dob: '', gender: '', phone: '', address: '', salary: '', joining_date: '' }
 
 function TeachersPage() {
+  const navigate = useNavigate()
   const [tab, setTab] = useState<'active' | 'trash'>('active')
   const [page, setPage] = useState(1)
   const [addOpen, setAddOpen] = useState(false)
@@ -61,8 +62,8 @@ function TeachersPage() {
     { key: 'joining_date', header: 'Joined', render: (t) => formatDate(t.joining_date) },
     { key: 'actions', header: 'Actions', render: (t) => (
       <div className="flex gap-1">
-        <Link to={`/teachers/${t.id}/profile`}><Button size="sm" variant="ghost" icon={Eye} title="View" /></Link>
-        <Button size="sm" variant="ghost" icon={Trash2} className="text-rose-500 hover:bg-rose-50" onClick={() => setDeleteId(t.id)} title="Delete" />
+        <Button size="sm" variant="secondary" icon={<Eye size={14} />} onClick={() => navigate(`/teachers/${t.id}/profile`)}>{null}</Button>
+        <Button size="sm" variant="secondary" icon={<Trash2 size={14} />} className="text-rose-500 hover:bg-rose-50" onClick={() => setDeleteId(t.id)}>{null}</Button>
       </div>
     )},
   ]
@@ -71,7 +72,7 @@ function TeachersPage() {
     { key: 'name', header: 'Teacher', render: (t) => t.user?.username ?? '—' },
     { key: 'designation', header: 'Designation', render: (t) => t.designation ?? '—' },
     { key: 'actions', header: 'Actions', render: (t) => (
-      <Button size="sm" variant="secondary" icon={RotateCcw} onClick={() => restoreTeacher(t.id)}>Restore</Button>
+      <Button size="sm" variant="secondary" icon={<RotateCcw size={14} />} onClick={() => restoreTeacher(t.id)}>Restore</Button>
     )},
   ]
 
@@ -82,7 +83,7 @@ function TeachersPage() {
           <div className="flex gap-2">
             <Button variant={tab === 'active' ? 'primary' : 'secondary'} size="sm" onClick={() => setTab('active')}>Active</Button>
             <Button variant={tab === 'trash' ? 'primary' : 'secondary'} size="sm" onClick={() => setTab('trash')}>Trash</Button>
-            <Button icon={Plus} onClick={() => setAddOpen(true)}>Add Teacher</Button>
+            <Button icon={<Plus size={16} />} onClick={() => setAddOpen(true)}>Add Teacher</Button>
           </div>
         }
       />
@@ -97,7 +98,7 @@ function TeachersPage() {
       )}
 
       <Modal open={addOpen} onClose={() => setAddOpen(false)} title="Add New Teacher" size="lg"
-        footer={<div className="flex justify-end gap-3"><Button variant="secondary" onClick={() => setAddOpen(false)}>Cancel</Button><Button form="add-teacher-form" type="submit" loading={saving}>Save Teacher</Button></div>}
+        footer={<div className="flex justify-end gap-3"><Button variant="secondary" onClick={() => setAddOpen(false)}>Cancel</Button><Button onClick={() => document.querySelector<HTMLFormElement>('#add-teacher-form')?.requestSubmit()} loading={saving}>Save Teacher</Button></div>}
       >
         <form id="add-teacher-form" onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
           <Input label="Full Name" required value={form.name} onChange={f('name')} placeholder="Teacher full name" />

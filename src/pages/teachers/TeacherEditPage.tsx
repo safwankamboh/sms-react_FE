@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useGetTeacherEditQuery, useUpdateTeacherMutation } from '../../store/api/teachersApi'
 import { FormWrapper, Input, Select, DatePicker, Button, PageHeader, Loader } from '../../components/common'
@@ -39,7 +39,7 @@ function TeacherEditPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Teachers" title="Edit Teacher" actions={<Button as={Link} to={`/teachers/${teacherId}/profile`} variant="secondary" icon={ArrowLeft}>Back</Button>} />
+      <PageHeader eyebrow="Teachers" title="Edit Teacher" actions={<Button variant="secondary" icon={<ArrowLeft size={16} />} onClick={() => navigate(`/teachers/${teacherId}/profile`)}>Back</Button>} />
       <FormWrapper title="Teacher Information" onSubmit={handleSubmit}
         actions={<><Button type="button" variant="secondary" onClick={() => navigate(-1)}>Cancel</Button><Button type="submit" loading={saving}>Update Teacher</Button></>}
       >

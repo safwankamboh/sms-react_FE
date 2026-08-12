@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Plus, Eye, Trash2, RotateCcw, User } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   useGetStudentsQuery, useGetTrashStudentsQuery,
   useSoftDeleteStudentMutation, useRestoreStudentMutation,
@@ -11,6 +11,7 @@ import type { Student } from '../../types'
 import { formatDate } from '../../utils/helpers'
 
 function StudentsPage() {
+  const navigate = useNavigate()
   const [deleteId, setDeleteId] = useState<{ classId: number; studentId: number } | null>(null)
   const [tab, setTab] = useState<'active' | 'trash'>('active')
   const [page, setPage] = useState(1)
@@ -48,10 +49,8 @@ function StudentsPage() {
     { key: 'created_at', header: 'Enrolled On', render: (s) => formatDate(s.created_at) },
     { key: 'actions', header: 'Actions', render: (s) => (
       <div className="flex items-center gap-1">
-        <Link to={`/students/${s.class_id}/${s.id}/profile`}>
-          <Button size="sm" variant="ghost" icon={Eye} title="View Profile" />
-        </Link>
-        <Button size="sm" variant="ghost" icon={Trash2} className="text-rose-500 hover:bg-rose-50" onClick={() => setDeleteId({ classId: s.class_id, studentId: s.id })} title="Delete" />
+        <Button size="sm" variant="secondary" icon={<Eye size={14} />} onClick={() => navigate(`/students/${s.class_id}/${s.id}/profile`)}>{null}</Button>
+        <Button size="sm" variant="secondary" icon={<Trash2 size={14} />} className="text-rose-500 hover:bg-rose-50" onClick={() => setDeleteId({ classId: s.class_id, studentId: s.id })}>{null}</Button>
       </div>
     )},
   ]
@@ -61,7 +60,7 @@ function StudentsPage() {
     { key: 'class', header: 'Class', render: (s) => s.class?.class_name ?? '—' },
     { key: 'deleted', header: 'Deleted At', render: (s) => formatDate(s.deleted_at) },
     { key: 'actions', header: 'Actions', render: (s) => (
-      <Button size="sm" variant="secondary" icon={RotateCcw} onClick={() => restoreStudent({ classId: s.class_id, studentId: s.id })}>Restore</Button>
+      <Button size="sm" variant="secondary" icon={<RotateCcw size={14} />} onClick={() => restoreStudent({ classId: s.class_id, studentId: s.id })}>Restore</Button>
     )},
   ]
 
@@ -75,7 +74,7 @@ function StudentsPage() {
           <div className="flex gap-2">
             <Button variant={tab === 'active' ? 'primary' : 'secondary'} size="sm" onClick={() => setTab('active')}>Active</Button>
             <Button variant={tab === 'trash' ? 'primary' : 'secondary'} size="sm" onClick={() => setTab('trash')}>Trash</Button>
-            <Button as={Link} to="/students/create" icon={Plus}>Add Student</Button>
+            <Button icon={<Plus size={16} />} onClick={() => navigate('/students/create')}>Add Student</Button>
           </div>
         }
       />

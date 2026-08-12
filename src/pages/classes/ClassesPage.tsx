@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Plus, ChevronRight } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useGetClassesQuery, useSaveClassMutation } from '../../store/api/classesApi'
 import { Table, Button, Modal, Input, PageHeader } from '../../components/common'
 import type { Column } from '../../components/common/Table'
@@ -8,6 +8,7 @@ import type { NewClass } from '../../types'
 import { formatDate } from '../../utils/helpers'
 
 function ClassesPage() {
+  const navigate = useNavigate()
   const { data: classes = [], isFetching: loading } = useGetClassesQuery()
   const [saveClass, { isLoading: saving }] = useSaveClassMutation()
 
@@ -30,8 +31,12 @@ function ClassesPage() {
     { key: 'created_at', header: 'Created', render: (c) => formatDate(c.created_at) },
     { key: 'actions', header: 'Actions', render: (c) => (
       <div className="flex gap-2">
-        <Button as={Link} to={`/administrator/classes/${c.id}/sections`} size="sm" variant="secondary" icon={ChevronRight} iconPosition="right">Sections</Button>
-        <Button as={Link} to={`/administrator/classes/${c.id}/tuition-fee`} size="sm" variant="ghost">Tuition Fee</Button>
+        <Button size="sm" variant="secondary" onClick={() => navigate(`/administrator/classes/${c.id}/sections`)}>
+          Sections <ChevronRight size={14} className="ml-2" />
+        </Button>
+        <Button size="sm" variant="secondary" onClick={() => navigate(`/administrator/classes/${c.id}/tuition-fee`)}>
+          Tuition Fee
+        </Button>
       </div>
     )},
   ]
@@ -39,12 +44,12 @@ function ClassesPage() {
   return (
     <div className="space-y-6">
       <PageHeader eyebrow="Administration" title="Classes" description="Manage school classes and their sections."
-        actions={<Button icon={Plus} onClick={() => setAddOpen(true)}>Add Class</Button>}
+        actions={<Button icon={<Plus size={16} />} onClick={() => setAddOpen(true)}>Add Class</Button>}
       />
       <Table columns={columns} data={classes} loading={loading} emptyTitle="No classes found" />
 
       <Modal open={addOpen} onClose={() => setAddOpen(false)} title="Add New Class"
-        footer={<div className="flex justify-end gap-3"><Button variant="secondary" onClick={() => setAddOpen(false)}>Cancel</Button><Button form="add-class-form" type="submit" loading={saving}>Save Class</Button></div>}
+        footer={<div className="flex justify-end gap-3"><Button variant="secondary" onClick={() => setAddOpen(false)}>Cancel</Button><Button onClick={() => document.querySelector<HTMLFormElement>('#add-class-form')?.requestSubmit()} loading={saving}>Save Class</Button></div>}
       >
         <form id="add-class-form" onSubmit={handleSubmit} className="space-y-4">
           <Input label="Class Name" required value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Class 9" />

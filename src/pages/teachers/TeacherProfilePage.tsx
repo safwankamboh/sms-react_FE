@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Edit2 } from 'lucide-react'
 import { useGetTeacherProfileQuery } from '../../store/api/teachersApi'
 import { Card, Button, Loader, PageHeader, Badge } from '../../components/common'
@@ -31,8 +31,8 @@ function TeacherProfilePage() {
       <PageHeader eyebrow="Teachers" title="Teacher Profile"
         actions={
           <div className="flex gap-2">
-            <Button as={Link} to="/teachers" variant="secondary" icon={ArrowLeft}>Back</Button>
-            <Button as={Link} to={`/teachers/${teacherId}/edit`} icon={Edit2}>Edit</Button>
+            <Button variant="secondary" icon={<ArrowLeft size={16} />} onClick={() => navigate('/teachers')}>Back</Button>
+            <Button icon={<Edit2 size={16} />} onClick={() => navigate(`/teachers/${teacherId}/edit`)}>Edit</Button>
           </div>
         }
       />
