@@ -16,7 +16,7 @@ function LoginPage() {
     e.preventDefault()
     try {
       const result = await login(form).unwrap()
-      setSession({ user: result.user, token: result.accessToken, activeAcademicYear: result.activeAcademicYear })
+      setSession({ user: result.user, token: result.accessToken, refreshToken: result.refreshToken, activeAcademicYear: result.activeAcademicYear })
       navigate('/', { replace: true })
     } catch {
       // error is surfaced below via the mutation's `error` state

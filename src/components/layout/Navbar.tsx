@@ -1,11 +1,24 @@
 import { LogOut, Menu } from 'lucide-react'
 import { useUI } from '../../hooks/useUI'
 import { useAuth } from '../../context/AuthContext'
+import { useLogoutMutation } from '../../store/api/authApi'
 import { getInitials } from '../../utils/helpers'
 
 function Navbar() {
   const { toggleSidebar } = useUI()
-  const { user, logout } = useAuth()
+  const { user, refreshToken, logout } = useAuth()
+  const [logoutMutation] = useLogoutMutation()
+
+  const handleLogout = async () => {
+    if (refreshToken) {
+      try {
+        await logoutMutation({ refreshToken }).unwrap()
+      } catch {
+        // best-effort server-side revoke — clear the local session regardless
+      }
+    }
+    logout()
+  }
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
@@ -32,7 +45,7 @@ function Navbar() {
           </div>
           <button
             type="button"
-            onClick={logout}
+            onClick={handleLogout}
             className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
             title="Logout"
           >
