@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { GraduationCap, Mail, Lock } from 'lucide-react'
-import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { login } from './authSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { login } from '../../store/slices/authSlice'
 import { APP_NAME } from '../../utils/constants'
 
 function LoginPage() {

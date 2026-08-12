@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { fetchGlobalClasses, fetchSections } from '../classes/classesSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { fetchGlobalClasses, fetchSections } from '../../store/slices/classesSlice'
 import axiosClient from '../../api/axiosClient'
 import type { Student, AttendanceRecord } from '../../types'
 import { Card, PageHeader, Select, Button, Badge, Loader } from '../../components/common'

@@ -1,7 +1,7 @@
 import { LogOut, Menu } from 'lucide-react'
 import { useUI } from '../../hooks/useUI'
-import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { logout } from '../../features/auth/authSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { logout } from '../../store/slices/authSlice'
 import { getInitials } from '../../utils/helpers'
 
 function Navbar() {
