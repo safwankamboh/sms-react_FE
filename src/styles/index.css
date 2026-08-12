@@ -2,16 +2,16 @@
 
 @theme {
   --font-sans: "Inter", "Segoe UI", sans-serif;
-  --color-brand-50: #eef8ff;
-  --color-brand-100: #d9efff;
-  --color-brand-200: #bce3ff;
-  --color-brand-300: #8ed3ff;
-  --color-brand-400: #59b8ff;
-  --color-brand-500: #3398ff;
-  --color-brand-600: #1b78f5;
-  --color-brand-700: #1461e1;
-  --color-brand-800: #174eb6;
-  --color-brand-900: #19458f;
+  --color-brand-50: #f9fafb;
+  --color-brand-100: #f3f4f6;
+  --color-brand-200: #e5e7eb;
+  --color-brand-300: #d1d5db;
+  --color-brand-400: #9ca3af;
+  --color-brand-500: #374151;
+  --color-brand-600: #1f2937;
+  --color-brand-700: #111827;
+  --color-brand-800: #0d1117;
+  --color-brand-900: #030712;
 }
 
 @layer base {
