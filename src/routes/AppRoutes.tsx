@@ -12,6 +12,12 @@ import TeachersPage from '../pages/teachers/TeachersPage'
 import TeacherEditPage from '../pages/teachers/TeacherEditPage'
 import TeacherProfilePage from '../pages/teachers/TeacherProfilePage'
 import ClassesPage from '../pages/classes/ClassesPage'
+import ClassCreatePage from '../pages/administrator/ClassCreatePage'
+import ManageClassFeePage from '../pages/administrator/ManageClassFeePage'
+import AcademicYearsPage from '../pages/administrator/AcademicYearsPage'
+import AcademicYearCreatePage from '../pages/administrator/AcademicYearCreatePage'
+import TuitionFeeGeneratePage from '../pages/administrator/TuitionFeeGeneratePage'
+import BreakSchedulePage from '../pages/administrator/BreakSchedulePage'
 import NotFound from '../pages/setup/NotFound'
 
 function AppRoutes() {
@@ -34,6 +40,12 @@ function AppRoutes() {
           <Route path="teachers/:teacherId/profile" element={<TeacherProfilePage />} />
 
           <Route path="administrator/classes" element={<ClassesPage />} />
+          <Route path="administrator/classes/create" element={<ClassCreatePage />} />
+          <Route path="administrator/classes/:classId/tuition-fee" element={<ManageClassFeePage />} />
+          <Route path="administrator/academic-years" element={<AcademicYearsPage />} />
+          <Route path="administrator/academic-years/create" element={<AcademicYearCreatePage />} />
+          <Route path="administrator/tuition-fee" element={<TuitionFeeGeneratePage />} />
+          <Route path="administrator/break-schedule" element={<BreakSchedulePage />} />
         </Route>
       </Route>
 

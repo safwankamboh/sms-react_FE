@@ -18,9 +18,13 @@ export const classesApi = api.injectEndpoints({
       providesTags: ['Section'],
     }),
 
-    saveClass: builder.mutation<NewClass, { class_name: string }>({
+    saveClass: builder.mutation<NewClass, { new_class: string }>({
       query: (payload) => ({ url: '/adminstrator/classes/save', method: 'POST', data: payload }),
       invalidatesTags: ['Class'],
+    }),
+
+    addClassBreak: builder.mutation<void, { from_time: string; to_time: string }>({
+      query: (payload) => ({ url: '/adminstrator/class-break', method: 'POST', data: payload }),
     }),
   }),
 })
@@ -31,4 +35,5 @@ export const {
   useGetSectionsQuery,
   useLazyGetSectionsQuery,
   useSaveClassMutation,
+  useAddClassBreakMutation,
 } = classesApi

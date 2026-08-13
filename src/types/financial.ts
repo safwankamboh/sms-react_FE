@@ -6,8 +6,14 @@ import type { Teacher } from './teacher'
 export interface TuitionFee {
   Id: number
   ClassId: number
-  Amount: number
   AcademicYearId: number
+  ApplyDate: string
+  Amount: number
+  AdmissionFee: number
+  // Only present on `manageTuitionFee`'s response — a dynamic attribute the
+  // backend computes per-row (true when the month is in the past or fees
+  // have already been collected for it), absent on other TuitionFee reads.
+  Disabled?: boolean
   CreatedAt: string
   UpdatedAt: string
   Newclass?: NewClass

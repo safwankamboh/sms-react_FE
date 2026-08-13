@@ -59,9 +59,13 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    label: 'Administration',
+    label: 'Administrator',
     items: [
-      { name: 'Academic Years', to: '/administrator/academic-years', icon: Layers },
+      { name: 'Acadmic Year', to: '/administrator/academic-years/create', icon: Layers },
+      { name: 'Manage Acadmic Year', to: '/administrator/academic-years', icon: Layers },
+      { name: 'Tution Fee', to: '/administrator/tuition-fee', icon: DollarSign },
+      { name: 'Create New Class', to: '/administrator/classes/create', icon: Building2 },
+      { name: 'Break Schedule', to: '/administrator/break-schedule', icon: ClipboardList },
     ],
   },
 ]
