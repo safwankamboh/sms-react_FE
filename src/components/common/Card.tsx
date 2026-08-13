@@ -7,7 +7,7 @@ function Card({ className, children, ...props }: CardProps) {
   return (
     <div
       className={classNames(
-        "rounded-2xl border border-slate-200 bg-white shadow-sm",
+        "border border-slate-200 bg-white shadow-sm",
         className,
       )}
       {...props}

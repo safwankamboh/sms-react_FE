@@ -26,7 +26,7 @@ function Navbar() {
         <button
           type="button"
           onClick={toggleSidebar}
-          className="rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 lg:hidden"
+          className="border border-slate-200 p-2 text-slate-600 hover:bg-slate-50 lg:hidden"
           aria-label="Open navigation"
         >
           <Menu size={19} />
@@ -35,7 +35,7 @@ function Navbar() {
         <div className="ml-auto flex items-center gap-3">
           <div className="hidden h-7 w-px bg-slate-200 sm:block" />
           <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-slate-900 text-sm font-bold text-white">
+            <div className="flex size-9 items-center justify-center bg-slate-900 text-sm font-bold text-white">
               {user ? getInitials(user.username) : 'SA'}
             </div>
             <div className="hidden text-left sm:block">
@@ -46,7 +46,7 @@ function Navbar() {
           <button
             type="button"
             onClick={handleLogout}
-            className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+            className="p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
             title="Logout"
           >
             <LogOut size={18} />

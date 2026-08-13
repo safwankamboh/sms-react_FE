@@ -44,7 +44,7 @@ function ConfirmDialog({
       }
     >
       <div className="flex gap-4">
-        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600">
+        <div className="flex size-11 shrink-0 items-center justify-center bg-rose-50 text-rose-600">
           <TriangleAlert size={21} />
         </div>
         <p className="pt-1 text-sm leading-6 text-slate-600">{description}</p>

@@ -8,7 +8,7 @@ interface ButtonProps {
   disabled?: boolean;
   icon?: React.ReactNode;
   style?: React.CSSProperties;
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   loading?: boolean;
@@ -28,12 +28,13 @@ const Button: React.FC<ButtonProps> = ({
   loading = false,
 }) => {
   const baseStyles =
-    "rounded-md focus:outline-none flex justify-center items-center font-medium transition duration-200";
+    "focus:outline-none flex justify-center items-center font-medium transition duration-200";
 
   const variants: Record<string, string> = {
     primary: "bg-gray-800 text-white hover:bg-gray-900",
     secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
     outline: "border border-gray-400 text-gray-700 hover:bg-gray-100",
+    ghost: "bg-transparent text-gray-600 hover:text-gray-900",
   };
 
   const sizes: Record<string, string> = {

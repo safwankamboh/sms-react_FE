@@ -91,7 +91,7 @@ function StudentsPage() {
         <div className="flex items-center gap-1">
           <Button
             size="sm"
-            variant="secondary"
+            variant="ghost"
             icon={<Eye size={14} />}
             onClick={() => navigate(`/students/${s.class_id}/${s.id}/profile`)}
           >
@@ -99,9 +99,9 @@ function StudentsPage() {
           </Button>
           <Button
             size="sm"
-            variant="secondary"
+            variant="ghost"
             icon={<Trash2 size={14} />}
-            className="text-rose-500 hover:bg-rose-50"
+            className="text-rose-500 hover:text-rose-700"
             onClick={() =>
               setDeleteId({ classId: s.class_id, studentId: s.id })
             }

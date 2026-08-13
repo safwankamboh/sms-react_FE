@@ -71,7 +71,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
     <div className="flex h-full flex-col bg-black text-slate-300">
       <div className="flex h-16 items-center justify-between border-b border-white/10 px-5">
         <div className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-white text-black">
+          <div className="flex size-9 items-center justify-center bg-white text-black">
             <GraduationCap size={19} />
           </div>
           <div>
@@ -81,7 +81,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
         </div>
         <button
           type="button"
-          className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white lg:hidden"
+          className="p-1.5 text-slate-400 hover:bg-white/10 hover:text-white lg:hidden"
           onClick={onClose}
           aria-label="Close navigation"
         >
@@ -106,7 +106,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                     onClick={onClose}
                     className={({ isActive }) =>
                       classNames(
-                        'flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+                        'flex items-center gap-3 px-3 py-2 text-sm font-medium transition-colors',
                         isActive
                           ? 'bg-white text-black'
                           : 'text-slate-400 hover:bg-white/10 hover:text-white',

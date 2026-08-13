@@ -19,7 +19,7 @@ interface BadgeProps {
 
 function Badge({ variant = 'default', className, children }: BadgeProps) {
   return (
-    <span className={classNames('inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold', variants[variant], className)}>
+    <span className={classNames('inline-flex items-center border px-2.5 py-1 text-xs font-semibold', variants[variant], className)}>
       {children}
     </span>
   )

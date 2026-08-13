@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useGetTeacherEditQuery, useUpdateTeacherMutation } from '../../store/api/teachersApi'
-import { FormWrapper, Input, Select, DatePicker, Button, PageHeader, Loader } from '../../components/common'
+import { FormWrapper, Input, Select, Button, PageHeader, Loader } from '../../components/common'
 import { GENDERS } from '../../utils/constants'
 
 function TeacherEditPage() {
   const { teacherId } = useParams()
   const navigate = useNavigate()
   const [error, setError] = useState('')
-  const [form, setForm] = useState({ name: '', email: '', designation: '', qualification: '', dob: '', gender: '', phone: '', address: '', salary: '', joining_date: '' })
+  const [form, setForm] = useState({ name: '', email: '', quailification: '', subject_specialization: '', experience: '', gender: '', contact_number: '', address: '', salary_amount: '' })
 
   const { data: teacher, isFetching: loading, isError } = useGetTeacherEditQuery(Number(teacherId))
   const [updateTeacher, { isLoading: saving }] = useUpdateTeacherMutation()
@@ -20,7 +20,7 @@ function TeacherEditPage() {
 
   useEffect(() => {
     if (!teacher) return
-    setForm({ name: teacher.user?.username ?? '', email: teacher.user?.email ?? '', designation: teacher.designation ?? '', qualification: teacher.qualification ?? '', dob: teacher.dob ?? '', gender: teacher.gender ?? '', phone: teacher.phone ?? '', address: teacher.address ?? '', salary: teacher.salary ? String(teacher.salary) : '', joining_date: teacher.joining_date ?? '' })
+    setForm({ name: [teacher.first_name, teacher.last_name].filter(Boolean).join(' '), email: teacher.user?.email ?? '', quailification: teacher.quailification ?? '', subject_specialization: teacher.subject_specialization ?? '', experience: teacher.experience ?? '', gender: teacher.gender ?? '', contact_number: teacher.contact_number ?? '', address: teacher.address ?? '', salary_amount: teacher.salary_amount ? String(teacher.salary_amount) : '' })
   }, [teacher])
 
   const f = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((p) => ({ ...p, [k]: e.target.value }))
@@ -46,13 +46,12 @@ function TeacherEditPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Full Name" required value={form.name} onChange={f('name')} />
           <Input label="Email" type="email" required value={form.email} onChange={f('email')} />
-          <Input label="Designation" value={form.designation} onChange={f('designation')} />
-          <Input label="Qualification" value={form.qualification} onChange={f('qualification')} />
-          <Input label="Phone" value={form.phone} onChange={f('phone')} />
-          <Input label="Salary (PKR)" type="number" value={form.salary} onChange={f('salary')} />
+          <Input label="Qualification" value={form.quailification} onChange={f('quailification')} />
+          <Input label="Subject Specialization" value={form.subject_specialization} onChange={f('subject_specialization')} />
+          <Input label="Experience" value={form.experience} onChange={f('experience')} />
+          <Input label="Phone" value={form.contact_number} onChange={f('contact_number')} />
+          <Input label="Salary (PKR)" type="number" value={form.salary_amount} onChange={f('salary_amount')} />
           <Select label="Gender" value={form.gender} options={GENDERS} onChange={f('gender')} placeholder="Select gender" />
-          <DatePicker label="Date of Birth" value={form.dob} onChange={f('dob')} />
-          <DatePicker label="Joining Date" value={form.joining_date} onChange={f('joining_date')} />
           <Input label="Address" value={form.address} onChange={f('address')} className="sm:col-span-2" />
           {error && <p className="sm:col-span-2 rounded-xl bg-rose-50 px-4 py-2 text-sm text-rose-600">{error}</p>}
         </div>

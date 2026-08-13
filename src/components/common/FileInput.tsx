@@ -28,7 +28,7 @@ const FileInput = forwardRef<HTMLInputElement, FileInputProps>(function FileInpu
       <label
         htmlFor={inputId}
         className={classNames(
-          'flex w-full cursor-pointer items-center gap-2.5 rounded-xl border bg-white px-3.5 py-2.5 text-sm outline-none transition',
+          'flex w-full cursor-pointer items-center gap-2.5 border bg-white px-3.5 py-2.5 text-sm outline-none transition',
           error ? 'border-rose-300' : 'border-slate-200 hover:border-slate-300',
           className,
         )}

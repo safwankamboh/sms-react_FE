@@ -5,13 +5,13 @@ import {
   useGetTeachersQuery, useGetTrashTeachersQuery, useSaveTeacherMutation,
   useSoftDeleteTeacherMutation, useRestoreTeacherMutation,
 } from '../../store/api/teachersApi'
-import { Table, Button, Modal, Input, Select, DatePicker, PageHeader, Pagination, ConfirmDialog } from '../../components/common'
+import { Table, Button, Modal, Input, Select, PageHeader, Pagination, ConfirmDialog } from '../../components/common'
 import type { Column } from '../../components/common/Table'
 import type { Teacher } from '../../types'
-import { formatDate, formatCurrency } from '../../utils/helpers'
+import { formatCurrency } from '../../utils/helpers'
 import { GENDERS } from '../../utils/constants'
 
-const defaultForm = { name: '', email: '', password: '', designation: '', qualification: '', dob: '', gender: '', phone: '', address: '', salary: '', joining_date: '' }
+const defaultForm = { name: '', email: '', password: '', quailification: '', subject_specialization: '', experience: '', gender: '', contact_number: '', address: '', salary_amount: '' }
 
 function TeachersPage() {
   const navigate = useNavigate()
@@ -29,6 +29,8 @@ function TeachersPage() {
   const [restoreTeacher] = useRestoreTeacherMutation()
 
   const list = teachersPage?.data ?? []
+
+  const teacherName = (t: Teacher) => [t.first_name, t.last_name].filter(Boolean).join(' ') || '—'
 
   const f = (k: keyof typeof defaultForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((p) => ({ ...p, [k]: e.target.value }))
 
@@ -51,26 +53,26 @@ function TeachersPage() {
   const columns: Column<Teacher>[] = [
     { key: 'name', header: 'Teacher', render: (t) => (
       <div>
-        <p className="font-medium text-slate-900">{t.user?.username ?? '—'}</p>
+        <p className="font-medium text-slate-900">{teacherName(t)}</p>
         <p className="text-xs text-slate-400">{t.user?.email ?? ''}</p>
       </div>
     )},
-    { key: 'designation', header: 'Designation', render: (t) => t.designation ?? '—' },
-    { key: 'qualification', header: 'Qualification', render: (t) => t.qualification ?? '—' },
-    { key: 'salary', header: 'Salary', render: (t) => formatCurrency(t.salary) },
-    { key: 'phone', header: 'Phone', render: (t) => t.phone ?? '—' },
-    { key: 'joining_date', header: 'Joined', render: (t) => formatDate(t.joining_date) },
+    { key: 'subject_specialization', header: 'Specialization', render: (t) => t.subject_specialization ?? '—' },
+    { key: 'quailification', header: 'Qualification', render: (t) => t.quailification ?? '—' },
+    { key: 'salary_amount', header: 'Salary', render: (t) => formatCurrency(t.salary_amount) },
+    { key: 'contact_number', header: 'Phone', render: (t) => t.contact_number ?? '—' },
+    { key: 'experience', header: 'Experience', render: (t) => t.experience ?? '—' },
     { key: 'actions', header: 'Actions', render: (t) => (
       <div className="flex gap-1">
-        <Button size="sm" variant="secondary" icon={<Eye size={14} />} onClick={() => navigate(`/teachers/${t.id}/profile`)}>{null}</Button>
-        <Button size="sm" variant="secondary" icon={<Trash2 size={14} />} className="text-rose-500 hover:bg-rose-50" onClick={() => setDeleteId(t.id)}>{null}</Button>
+        <Button size="sm" variant="ghost" icon={<Eye size={14} />} onClick={() => navigate(`/teachers/${t.id}/profile`)}>{null}</Button>
+        <Button size="sm" variant="ghost" icon={<Trash2 size={14} />} className="text-rose-500 hover:text-rose-700" onClick={() => setDeleteId(t.id)}>{null}</Button>
       </div>
     )},
   ]
 
   const trashColumns: Column<Teacher>[] = [
-    { key: 'name', header: 'Teacher', render: (t) => t.user?.username ?? '—' },
-    { key: 'designation', header: 'Designation', render: (t) => t.designation ?? '—' },
+    { key: 'name', header: 'Teacher', render: teacherName },
+    { key: 'quailification', header: 'Qualification', render: (t) => t.quailification ?? '—' },
     { key: 'actions', header: 'Actions', render: (t) => (
       <Button size="sm" variant="secondary" icon={<RotateCcw size={14} />} onClick={() => restoreTeacher(t.id)}>Restore</Button>
     )},
@@ -104,13 +106,12 @@ function TeachersPage() {
           <Input label="Full Name" required value={form.name} onChange={f('name')} placeholder="Teacher full name" />
           <Input label="Email" type="email" required value={form.email} onChange={f('email')} placeholder="teacher@school.com" />
           <Input label="Password" type="password" required value={form.password} onChange={f('password')} placeholder="••••••••" />
-          <Input label="Designation" value={form.designation} onChange={f('designation')} placeholder="e.g. Senior Teacher" />
-          <Input label="Qualification" value={form.qualification} onChange={f('qualification')} placeholder="e.g. M.Sc Mathematics" />
-          <Input label="Phone" value={form.phone} onChange={f('phone')} placeholder="+92..." />
-          <Input label="Salary (PKR)" type="number" value={form.salary} onChange={f('salary')} placeholder="e.g. 50000" />
+          <Input label="Qualification" value={form.quailification} onChange={f('quailification')} placeholder="e.g. M.Sc Mathematics" />
+          <Input label="Subject Specialization" value={form.subject_specialization} onChange={f('subject_specialization')} placeholder="e.g. Mathematics" />
+          <Input label="Experience" value={form.experience} onChange={f('experience')} placeholder="e.g. 5 years" />
+          <Input label="Phone" value={form.contact_number} onChange={f('contact_number')} placeholder="+92..." />
+          <Input label="Salary (PKR)" type="number" value={form.salary_amount} onChange={f('salary_amount')} placeholder="e.g. 50000" />
           <Select label="Gender" value={form.gender} options={GENDERS} onChange={f('gender')} placeholder="Select gender" />
-          <DatePicker label="Date of Birth" value={form.dob} onChange={f('dob')} />
-          <DatePicker label="Joining Date" value={form.joining_date} onChange={f('joining_date')} />
           <Input label="Address" value={form.address} onChange={f('address')} placeholder="Home address" className="sm:col-span-2" />
           {error && <p className="sm:col-span-2 rounded-xl bg-rose-50 px-4 py-2 text-sm text-rose-600">{error}</p>}
         </form>

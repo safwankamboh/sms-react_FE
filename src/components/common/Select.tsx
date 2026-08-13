@@ -38,7 +38,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
         aria-invalid={Boolean(error)}
         aria-describedby={error || hint ? helpId : undefined}
         className={classNames(
-          'w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:ring-2 disabled:cursor-not-allowed disabled:bg-slate-100',
+          'w-full border bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:ring-2 disabled:cursor-not-allowed disabled:bg-slate-100',
           error
             ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
             : 'border-slate-200 focus:border-slate-900 focus:ring-slate-100',
