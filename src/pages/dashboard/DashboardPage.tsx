@@ -11,7 +11,7 @@ import { formatCurrency } from '../../utils/helpers'
 
 function StatCard({ label, value, icon: Icon, sub }: { label: string; value: string | number; icon: React.ElementType; sub?: string }) {
   return (
-    <Card as="div" className="p-5">
+    <Card className="p-5">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</p>
@@ -56,7 +56,7 @@ function DashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card as="div" className="p-5 sm:p-6">
+        <Card className="p-5 sm:p-6">
           <h2 className="mb-4 text-base font-semibold text-slate-900">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
@@ -82,7 +82,7 @@ function DashboardPage() {
           </div>
         </Card>
 
-        <Card as="div" className="p-5 sm:p-6">
+        <Card className="p-5 sm:p-6">
           <h2 className="mb-4 text-base font-semibold text-slate-900">System Info</h2>
           <dl className="space-y-3">
             {[

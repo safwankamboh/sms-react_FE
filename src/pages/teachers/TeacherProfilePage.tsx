@@ -37,7 +37,7 @@ function TeacherProfilePage() {
         }
       />
 
-      <Card as="div" className="p-6">
+      <Card className="p-6">
         <div className="flex items-start gap-5">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-xl font-bold text-white">
             {getInitials(teacher.user?.username ?? 'T')}
@@ -54,7 +54,7 @@ function TeacherProfilePage() {
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card as="div" className="p-5 sm:p-6">
+        <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Personal Details</h3>
           <dl className="grid grid-cols-2 gap-4">
             <Field label="Phone" value={teacher.phone} />
@@ -63,7 +63,7 @@ function TeacherProfilePage() {
             <Field label="Address" value={teacher.address} />
           </dl>
         </Card>
-        <Card as="div" className="p-5 sm:p-6">
+        <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Employment Details</h3>
           <dl className="grid grid-cols-2 gap-4">
             <Field label="Salary" value={formatCurrency(teacher.salary)} />

@@ -45,7 +45,7 @@ function StudentProfilePage() {
         }
       />
 
-      <Card as="div" className="p-6">
+      <Card className="p-6">
         <div className="flex items-start gap-5">
           <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-xl font-bold text-white">
             {getInitials(fullName)}
@@ -63,7 +63,7 @@ function StudentProfilePage() {
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card as="div" className="p-5 sm:p-6">
+        <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Personal Information</h3>
           <dl className="grid grid-cols-2 gap-4">
             <Field label="Date of Birth" value={formatDate(student.dob)} />
@@ -75,7 +75,7 @@ function StudentProfilePage() {
           </dl>
         </Card>
 
-        <Card as="div" className="p-5 sm:p-6">
+        <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Guardian Information</h3>
           <dl className="grid grid-cols-2 gap-4">
             <Field label="Guardian" value={student.guardian} />
@@ -85,7 +85,7 @@ function StudentProfilePage() {
           </dl>
         </Card>
 
-        <Card as="div" className="p-5 sm:p-6">
+        <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Academic Information</h3>
           <dl className="grid grid-cols-2 gap-4">
             <Field label="Class" value={student.class?.class_name} />

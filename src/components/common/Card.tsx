@@ -1,18 +1,20 @@
-import type { ElementType, ComponentPropsWithoutRef } from 'react'
-import { classNames } from '../../utils/helpers'
+import type { ComponentPropsWithoutRef } from "react";
+import { classNames } from "../../utils/helpers";
 
-type CardProps<T extends ElementType = 'section'> = { as?: T } & ComponentPropsWithoutRef<T>
+type CardProps = ComponentPropsWithoutRef<"div">;
 
-function Card<T extends ElementType = 'section'>({ as, className, children, ...props }: CardProps<T>) {
-  const Component = (as ?? 'section') as ElementType
+function Card({ className, children, ...props }: CardProps) {
   return (
-    <Component
-      className={classNames('rounded-2xl border border-slate-200 bg-white shadow-sm', className)}
+    <div
+      className={classNames(
+        "rounded-2xl border border-slate-200 bg-white shadow-sm",
+        className,
+      )}
       {...props}
     >
       {children}
-    </Component>
-  )
+    </div>
+  );
 }
 
-export default Card
+export default Card;

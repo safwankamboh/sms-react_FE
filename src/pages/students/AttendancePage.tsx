@@ -48,7 +48,7 @@ function AttendancePage() {
     <div className="space-y-6">
       <PageHeader eyebrow="Academic" title="Attendance" description="Mark daily student attendance by class." />
 
-      <Card as="div" className="p-5 sm:p-6">
+      <Card className="p-5 sm:p-6">
         <div className="grid gap-4 sm:grid-cols-4">
           <Select label="Class" value={classId} options={classes.map((c) => ({ value: c.id, label: c.class_name }))} onChange={(e) => handleClassChange(e.target.value)} placeholder="Select class" />
           <Select label="Section" value={sectionId} options={sections.map((s) => ({ value: s.id, label: s.section_name }))} onChange={(e) => setSectionId(e.target.value)} placeholder="Select section" />
@@ -66,7 +66,7 @@ function AttendancePage() {
 
       {students.length > 0 && (
         <>
-          <Card as="div" className="overflow-hidden">
+          <Card className="overflow-hidden">
             <div className="border-b border-slate-200 px-5 py-4">
               <h2 className="font-semibold text-slate-900">Attendance Sheet — {formatDate(date)}</h2>
               <p className="text-sm text-slate-500">{students.length} students</p>
