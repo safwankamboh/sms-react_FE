@@ -30,7 +30,7 @@ function TeachersPage() {
 
   const list = teachersPage?.data ?? []
 
-  const teacherName = (t: Teacher) => [t.first_name, t.last_name].filter(Boolean).join(' ') || '—'
+  const teacherName = (t: Teacher) => [t.FirstName, t.LastName].filter(Boolean).join(' ') || '—'
 
   const f = (k: keyof typeof defaultForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((p) => ({ ...p, [k]: e.target.value }))
 
@@ -54,27 +54,27 @@ function TeachersPage() {
     { key: 'name', header: 'Teacher', render: (t) => (
       <div>
         <p className="font-medium text-slate-900">{teacherName(t)}</p>
-        <p className="text-xs text-slate-400">{t.user?.email ?? ''}</p>
+        <p className="text-xs text-slate-400">{t.User?.Email ?? ''}</p>
       </div>
     )},
-    { key: 'subject_specialization', header: 'Specialization', render: (t) => t.subject_specialization ?? '—' },
-    { key: 'quailification', header: 'Qualification', render: (t) => t.quailification ?? '—' },
-    { key: 'salary_amount', header: 'Salary', render: (t) => formatCurrency(t.salary_amount) },
-    { key: 'contact_number', header: 'Phone', render: (t) => t.contact_number ?? '—' },
-    { key: 'experience', header: 'Experience', render: (t) => t.experience ?? '—' },
+    { key: 'subject_specialization', header: 'Specialization', render: (t) => t.SubjectSpecialization ?? '—' },
+    { key: 'quailification', header: 'Qualification', render: (t) => t.Quailification ?? '—' },
+    { key: 'salary_amount', header: 'Salary', render: (t) => formatCurrency(t.SalaryAmount) },
+    { key: 'contact_number', header: 'Phone', render: (t) => t.ContactNumber ?? '—' },
+    { key: 'experience', header: 'Experience', render: (t) => t.Experience ?? '—' },
     { key: 'actions', header: 'Actions', render: (t) => (
       <div className="flex gap-1">
-        <Button size="sm" variant="ghost" icon={<Eye size={14} />} onClick={() => navigate(`/teachers/${t.id}/profile`)}>{null}</Button>
-        <Button size="sm" variant="ghost" icon={<Trash2 size={14} />} className="text-rose-500 hover:text-rose-700" onClick={() => setDeleteId(t.id)}>{null}</Button>
+        <Button size="sm" variant="ghost" icon={<Eye size={14} />} onClick={() => navigate(`/teachers/${t.Id}/profile`)}>{null}</Button>
+        <Button size="sm" variant="ghost" icon={<Trash2 size={14} />} className="text-rose-500 hover:text-rose-700" onClick={() => setDeleteId(t.Id)}>{null}</Button>
       </div>
     )},
   ]
 
   const trashColumns: Column<Teacher>[] = [
     { key: 'name', header: 'Teacher', render: teacherName },
-    { key: 'quailification', header: 'Qualification', render: (t) => t.quailification ?? '—' },
+    { key: 'quailification', header: 'Qualification', render: (t) => t.Quailification ?? '—' },
     { key: 'actions', header: 'Actions', render: (t) => (
-      <Button size="sm" variant="secondary" icon={<RotateCcw size={14} />} onClick={() => restoreTeacher(t.id)}>Restore</Button>
+      <Button size="sm" variant="secondary" icon={<RotateCcw size={14} />} onClick={() => restoreTeacher(t.Id)}>Restore</Button>
     )},
   ]
 
@@ -93,7 +93,7 @@ function TeachersPage() {
       {tab === 'active' ? (
         <>
           <Table columns={columns} data={list} loading={loadingTeachers} emptyTitle="No teachers found" />
-          <Pagination currentPage={teachersPage?.current_page ?? 1} lastPage={teachersPage?.last_page ?? 1} onPageChange={setPage} total={teachersPage?.total ?? 0} from={teachersPage?.from ?? 0} to={teachersPage?.to ?? 0} />
+          <Pagination currentPage={teachersPage?.meta.currentPage ?? 1} lastPage={teachersPage?.meta.lastPage ?? 1} onPageChange={setPage} total={teachersPage?.meta.total ?? 0} from={teachersPage?.meta.from ?? 0} to={teachersPage?.meta.to ?? 0} />
         </>
       ) : (
         <Table columns={trashColumns} data={trash} loading={loadingTrash} emptyTitle="Trash is empty" />

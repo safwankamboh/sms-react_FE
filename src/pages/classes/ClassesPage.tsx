@@ -27,14 +27,14 @@ function ClassesPage() {
   }
 
   const columns: Column<NewClass>[] = [
-    { key: 'class_name', header: 'Class Name', render: (c) => <span className="font-medium text-slate-900">{c.class_name}</span> },
-    { key: 'created_at', header: 'Created', render: (c) => formatDate(c.created_at) },
+    { key: 'class_name', header: 'Class Name', render: (c) => <span className="font-medium text-slate-900">{c.ClassName}</span> },
+    { key: 'created_at', header: 'Created', render: (c) => formatDate(c.CreatedAt) },
     { key: 'actions', header: 'Actions', render: (c) => (
       <div className="flex gap-2">
-        <Button size="sm" variant="secondary" onClick={() => navigate(`/administrator/classes/${c.id}/sections`)}>
+        <Button size="sm" variant="secondary" onClick={() => navigate(`/administrator/classes/${c.Id}/sections`)}>
           Sections <ChevronRight size={14} className="ml-2" />
         </Button>
-        <Button size="sm" variant="secondary" onClick={() => navigate(`/administrator/classes/${c.id}/tuition-fee`)}>
+        <Button size="sm" variant="secondary" onClick={() => navigate(`/administrator/classes/${c.Id}/tuition-fee`)}>
           Tuition Fee
         </Button>
       </div>

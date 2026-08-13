@@ -1,13 +1,10 @@
 import { api } from '../api'
 import type { OtherExpanse, StudentTuitionFee, TeacherSalary } from '../../types'
 
-const asList = <T>(response: T[] | { data: T[] }): T[] => (Array.isArray(response) ? response : (response.data ?? []))
-
 export const financialApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getExpenses: builder.query<OtherExpanse[], void>({
       query: () => ({ url: '/financial/other-expanses', method: 'GET' }),
-      transformResponse: asList<OtherExpanse>,
       providesTags: ['OtherExpense'],
     }),
 
@@ -28,7 +25,6 @@ export const financialApi = api.injectEndpoints({
 
     getTeacherSalaries: builder.query<TeacherSalary[], void>({
       query: () => ({ url: '/financial/teachers-salaries', method: 'GET' }),
-      transformResponse: asList<TeacherSalary>,
       providesTags: ['TeacherSalary'],
     }),
 
@@ -46,7 +42,6 @@ export const financialApi = api.injectEndpoints({
 
     getStudentFees: builder.query<StudentTuitionFee[], number>({
       query: (classId) => ({ url: `/financial/class/${classId}`, method: 'GET' }),
-      transformResponse: asList<StudentTuitionFee>,
       providesTags: ['StudentFee'],
     }),
 

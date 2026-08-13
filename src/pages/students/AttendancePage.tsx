@@ -27,7 +27,7 @@ function AttendancePage() {
     if (!classId) return
     const list = await loadStudents(Number(classId)).unwrap()
     const init: Record<number, Status> = {}
-    list.forEach((s) => { init[s.id] = 'present' })
+    list.forEach((s) => { init[s.Id] = 'present' })
     setAttendance(init)
   }
 
@@ -50,8 +50,8 @@ function AttendancePage() {
 
       <Card className="p-5 sm:p-6">
         <div className="grid gap-4 sm:grid-cols-4">
-          <Select label="Class" value={classId} options={classes.map((c) => ({ value: c.id, label: c.class_name }))} onChange={(e) => handleClassChange(e.target.value)} placeholder="Select class" />
-          <Select label="Section" value={sectionId} options={sections.map((s) => ({ value: s.id, label: s.section_name }))} onChange={(e) => setSectionId(e.target.value)} placeholder="Select section" />
+          <Select label="Class" value={classId} options={classes.map((c) => ({ value: c.Id, label: c.ClassName }))} onChange={(e) => handleClassChange(e.target.value)} placeholder="Select class" />
+          <Select label="Section" value={sectionId} options={sections.map((s) => ({ value: s.Id, label: s.SectionName }))} onChange={(e) => setSectionId(e.target.value)} placeholder="Select section" />
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700">Date</label>
             <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-slate-900 focus:ring-2 focus:ring-slate-100" />
@@ -73,19 +73,19 @@ function AttendancePage() {
             </div>
             <div className="divide-y divide-slate-100">
               {students.map((student) => {
-                const status = attendance[student.id] ?? 'present'
+                const status = attendance[student.Id] ?? 'present'
                 return (
-                  <div key={student.id} className="flex items-center justify-between px-5 py-3.5">
+                  <div key={student.Id} className="flex items-center justify-between px-5 py-3.5">
                     <div>
-                      <p className="text-sm font-medium text-slate-900">{student.first_name} {student.last_name}</p>
-                      <p className="text-xs text-slate-500">Guardian: {student.guardian ?? '—'}</p>
+                      <p className="text-sm font-medium text-slate-900">{student.FirstName} {student.LastName}</p>
+                      <p className="text-xs text-slate-500">Guardian: {student.Guardian ?? '—'}</p>
                     </div>
                     <div className="flex gap-2">
                       {(['present', 'absent', 'late'] as Status[]).map((s) => (
                         <button
                           key={s}
                           type="button"
-                          onClick={() => toggleStatus(student.id, s)}
+                          onClick={() => toggleStatus(student.Id, s)}
                           className={`rounded-lg px-3 py-1.5 text-xs font-semibold capitalize transition ${status === s ? (s === 'present' ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300' : s === 'absent' ? 'bg-rose-100 text-rose-700 ring-1 ring-rose-300' : 'bg-amber-100 text-amber-700 ring-1 ring-amber-300') : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
                         >
                           {s}

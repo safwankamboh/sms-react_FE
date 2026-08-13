@@ -56,33 +56,33 @@ function StudentsPage() {
           </div>
           <div>
             <p className="font-medium text-slate-900">
-              {s.first_name} {s.last_name}
+              {s.FirstName} {s.LastName}
             </p>
-            <p className="text-xs text-slate-400">{s.contact_number}</p>
+            <p className="text-xs text-slate-400">{s.ContactNumber}</p>
           </div>
         </div>
       ),
     },
-    { key: "guardian", header: "Guardian", render: (s) => s.guardian },
+    { key: "guardian", header: "Guardian", render: (s) => s.Guardian },
     {
       key: "class",
       header: "Class",
-      render: (s) => s.class?.class_name ?? "—",
+      render: (s) => s.Class?.ClassName ?? "—",
     },
     {
       key: "section",
       header: "Section",
-      render: (s) => s.section?.section_name ?? "—",
+      render: (s) => s.Section?.SectionName ?? "—",
     },
     {
       key: "gender",
       header: "Gender",
-      render: (s) => <Badge>{s.gender}</Badge>,
+      render: (s) => <Badge>{s.Gender}</Badge>,
     },
     {
       key: "created_at",
       header: "Enrolled On",
-      render: (s) => formatDate(s.created_at),
+      render: (s) => formatDate(s.CreatedAt),
     },
     {
       key: "actions",
@@ -93,7 +93,7 @@ function StudentsPage() {
             size="sm"
             variant="ghost"
             icon={<Eye size={14} />}
-            onClick={() => navigate(`/students/${s.class_id}/${s.id}/profile`)}
+            onClick={() => navigate(`/students/${s.ClassId}/${s.Id}/profile`)}
           >
             {null}
           </Button>
@@ -103,7 +103,7 @@ function StudentsPage() {
             icon={<Trash2 size={14} />}
             className="text-rose-500 hover:text-rose-700"
             onClick={() =>
-              setDeleteId({ classId: s.class_id, studentId: s.id })
+              setDeleteId({ classId: s.ClassId, studentId: s.Id })
             }
           >
             {null}
@@ -117,17 +117,17 @@ function StudentsPage() {
     {
       key: "name",
       header: "Name",
-      render: (s) => `${s.first_name} ${s.last_name}`,
+      render: (s) => `${s.FirstName} ${s.LastName}`,
     },
     {
       key: "class",
       header: "Class",
-      render: (s) => s.class?.class_name ?? "—",
+      render: (s) => s.Class?.ClassName ?? "—",
     },
     {
       key: "deleted",
       header: "Deleted At",
-      render: (s) => formatDate(s.deleted_at),
+      render: (s) => formatDate(s.DeletedAt),
     },
     {
       key: "actions",
@@ -138,7 +138,7 @@ function StudentsPage() {
           variant="secondary"
           icon={<RotateCcw size={14} />}
           onClick={() =>
-            restoreStudent({ classId: s.class_id, studentId: s.id })
+            restoreStudent({ classId: s.ClassId, studentId: s.Id })
           }
         >
           Restore
@@ -188,12 +188,12 @@ function StudentsPage() {
             emptyTitle="No students found"
           />
           <Pagination
-            currentPage={studentsPage?.current_page ?? 1}
-            lastPage={studentsPage?.last_page ?? 1}
+            currentPage={studentsPage?.meta.currentPage ?? 1}
+            lastPage={studentsPage?.meta.lastPage ?? 1}
             onPageChange={setPage}
-            total={studentsPage?.total ?? 0}
-            from={studentsPage?.from ?? 0}
-            to={studentsPage?.to ?? 0}
+            total={studentsPage?.meta.total ?? 0}
+            from={studentsPage?.meta.from ?? 0}
+            to={studentsPage?.meta.to ?? 0}
           />
         </>
       ) : (

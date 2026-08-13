@@ -1,12 +1,12 @@
 export interface AuthUser {
-  id: number
-  role_id: number
-  username: string
-  email: string
-  email_verified_at: string | null
-  deleted_at: string | null
-  created_at: string
-  updated_at: string
+  Id: number
+  RoleId: number
+  Username: string
+  Email: string
+  EmailVerifiedAt: string | null
+  DeletedAt: string | null
+  CreatedAt: string
+  UpdatedAt: string
 }
 
 export interface LoginPayload {

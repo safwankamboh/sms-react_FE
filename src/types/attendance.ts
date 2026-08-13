@@ -1,14 +1,14 @@
 import type { Student } from './student'
 
 export interface StudentAttendance {
-  id: number
-  student_id: number
-  class_id: number
-  date: string
-  status: 'present' | 'absent' | 'late'
-  created_at: string
-  updated_at: string
-  student?: Student
+  Id: number
+  StudentId: number
+  ClassId: number
+  Date: string
+  Status: 'present' | 'absent' | 'late'
+  CreatedAt: string
+  UpdatedAt: string
+  Student?: Student
 }
 
 export interface AttendanceRecord {

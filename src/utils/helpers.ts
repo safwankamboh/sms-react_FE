@@ -1,5 +1,22 @@
+import type { PaginationMeta, RawPaginationMeta } from '../types/common'
+
 export function classNames(...classes: (string | undefined | null | false)[]): string {
   return classes.filter(Boolean).join(' ')
+}
+
+export function toPaginationMeta(meta?: RawPaginationMeta | null): PaginationMeta {
+  const currentPage = meta?.CurrentPage ?? 1
+  const perPage = meta?.PerPage ?? 0
+  const total = meta?.Total ?? 0
+  const lastPage = meta?.LastPage ?? 1
+  return {
+    currentPage,
+    perPage,
+    total,
+    lastPage,
+    from: total === 0 ? 0 : (currentPage - 1) * perPage + 1,
+    to: Math.min(currentPage * perPage, total),
+  }
 }
 
 export function formatDate(value: string | null | undefined, options: Intl.DateTimeFormatOptions = {}): string {

@@ -40,9 +40,9 @@ async function refreshAccessToken(): Promise<string | null> {
       { refresh_token: refreshToken },
       { headers: { Accept: 'application/json' } },
     )
-    localStorage.setItem(AUTH_TOKEN_KEY, data.data.accessToken)
-    localStorage.setItem(REFRESH_TOKEN_KEY, data.data.refreshToken)
-    return data.data.accessToken as string
+    localStorage.setItem(AUTH_TOKEN_KEY, data.Data.AccessToken)
+    localStorage.setItem(REFRESH_TOKEN_KEY, data.Data.RefreshToken)
+    return data.Data.AccessToken as string
   } catch {
     localStorage.removeItem(AUTH_TOKEN_KEY)
     localStorage.removeItem(REFRESH_TOKEN_KEY)
@@ -55,7 +55,7 @@ async function refreshAccessToken(): Promise<string | null> {
 
 axiosClient.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError<{ message?: string; errors?: Record<string, string[]> }>) => {
+  async (error: AxiosError<{ Message?: string; Errors?: Record<string, string[]> }>) => {
     const originalRequest = error.config as RetriableConfig | undefined
     const isAuthRoute = originalRequest?.url?.includes('/auth/sign-in') || originalRequest?.url?.includes('/auth/refresh-token')
 
@@ -72,8 +72,8 @@ axiosClient.interceptors.response.use(
 
     const normalizedError: NormalizedError = {
       status: error.response?.status ?? null,
-      message: error.response?.data?.message ?? error.message ?? 'Something went wrong.',
-      errors: error.response?.data?.errors ?? {},
+      message: error.response?.data?.Message ?? error.message ?? 'Something went wrong.',
+      errors: error.response?.data?.Errors ?? {},
     }
     return Promise.reject(normalizedError)
   },

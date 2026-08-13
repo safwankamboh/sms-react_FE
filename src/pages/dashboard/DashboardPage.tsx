@@ -34,17 +34,17 @@ function DashboardPage() {
   const { data: coursesPage } = useGetCoursesQuery(1)
 
   const stats = [
-    { label: 'Total Students', value: studentsPage?.total ?? 0, icon: GraduationCap, sub: 'enrolled this year' },
-    { label: 'Total Teachers', value: teachersPage?.total ?? 0, icon: Users, sub: 'active staff' },
+    { label: 'Total Students', value: studentsPage?.meta.total ?? 0, icon: GraduationCap, sub: 'enrolled this year' },
+    { label: 'Total Teachers', value: teachersPage?.meta.total ?? 0, icon: Users, sub: 'active staff' },
     { label: 'Total Classes', value: classes.length, icon: School, sub: 'across all grades' },
-    { label: 'Total Courses', value: coursesPage?.total ?? 0, icon: BookOpen, sub: 'in curriculum' },
+    { label: 'Total Courses', value: coursesPage?.meta.total ?? 0, icon: BookOpen, sub: 'in curriculum' },
   ]
 
   return (
     <div className="space-y-6">
       <PageHeader
         eyebrow="Dashboard"
-        title={`Welcome back, ${user?.username ?? 'Admin'}`}
+        title={`Welcome back, ${user?.Username ?? 'Admin'}`}
         description="Here's an overview of your school management system."
         actions={<Badge variant="success">System Active</Badge>}
       />
@@ -86,9 +86,9 @@ function DashboardPage() {
           <h2 className="mb-4 text-base font-semibold text-slate-900">System Info</h2>
           <dl className="space-y-3">
             {[
-              { term: 'Logged In As', desc: user?.username ?? '—' },
-              { term: 'Email', desc: user?.email ?? '—' },
-              { term: 'Role', desc: user?.role_id === 1 ? 'Administrator' : user?.role_id === 2 ? 'Teacher' : 'Student' },
+              { term: 'Logged In As', desc: user?.Username ?? '—' },
+              { term: 'Email', desc: user?.Email ?? '—' },
+              { term: 'Role', desc: user?.RoleId === 1 ? 'Administrator' : user?.RoleId === 2 ? 'Teacher' : 'Student' },
               { term: 'API Endpoint', desc: import.meta.env.VITE_API_BASE_URL ?? 'http://sms.test/api/v1' },
             ].map((item) => (
               <div key={item.term} className="flex justify-between text-sm">

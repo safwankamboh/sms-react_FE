@@ -2,10 +2,10 @@ import type { NewClass } from './class'
 import type { Course } from './course'
 
 export interface ExamType {
-  id: number
-  exam_name: string
-  created_at: string
-  updated_at: string
+  Id: number
+  ExamName: string
+  CreatedAt: string
+  UpdatedAt: string
 }
 
 export interface ExamTypeFormData {
@@ -13,18 +13,18 @@ export interface ExamTypeFormData {
 }
 
 export interface ExamSchedule {
-  id: number
-  class_id: number
-  exam_type_id: number
-  course_id: number
-  date: string
-  start_time: string
-  end_time: string
-  created_at: string
-  updated_at: string
-  course?: Course
-  exam_type?: ExamType
-  newclass?: NewClass
+  Id: number
+  ClassId: number
+  ExamTypeId: number
+  CourseId: number
+  Date: string
+  StartTime: string
+  EndTime: string
+  CreatedAt: string
+  UpdatedAt: string
+  Course?: Course
+  ExamType?: ExamType
+  Newclass?: NewClass
 }
 
 export interface ExamScheduleFormData {

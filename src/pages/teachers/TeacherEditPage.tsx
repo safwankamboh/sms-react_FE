@@ -20,7 +20,7 @@ function TeacherEditPage() {
 
   useEffect(() => {
     if (!teacher) return
-    setForm({ name: [teacher.first_name, teacher.last_name].filter(Boolean).join(' '), email: teacher.user?.email ?? '', quailification: teacher.quailification ?? '', subject_specialization: teacher.subject_specialization ?? '', experience: teacher.experience ?? '', gender: teacher.gender ?? '', contact_number: teacher.contact_number ?? '', address: teacher.address ?? '', salary_amount: teacher.salary_amount ? String(teacher.salary_amount) : '' })
+    setForm({ name: [teacher.FirstName, teacher.LastName].filter(Boolean).join(' '), email: teacher.User?.Email ?? '', quailification: teacher.Quailification ?? '', subject_specialization: teacher.SubjectSpecialization ?? '', experience: teacher.Experience ?? '', gender: teacher.Gender ?? '', contact_number: teacher.ContactNumber ?? '', address: teacher.Address ?? '', salary_amount: teacher.SalaryAmount ? String(teacher.SalaryAmount) : '' })
   }, [teacher])
 
   const f = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm((p) => ({ ...p, [k]: e.target.value }))

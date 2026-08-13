@@ -30,7 +30,7 @@ function StudentProfilePage() {
   if (loading) return <Loader fullPage />
   if (!student) return null
 
-  const fullName = `${student.first_name} ${student.last_name}`
+  const fullName = `${student.FirstName} ${student.LastName}`
 
   return (
     <div className="space-y-6">
@@ -52,11 +52,11 @@ function StudentProfilePage() {
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-slate-900">{fullName}</h2>
-            <p className="text-sm text-slate-500">{student.user?.email ?? '—'}</p>
+            <p className="text-sm text-slate-500">{student.User?.Email ?? '—'}</p>
             <div className="mt-2 flex flex-wrap gap-2">
-              {student.class && <Badge>{student.class.class_name}</Badge>}
-              {student.section && <Badge variant="info">{student.section.section_name}</Badge>}
-              {student.gender && <Badge variant="default">{student.gender}</Badge>}
+              {student.Class && <Badge>{student.Class.ClassName}</Badge>}
+              {student.Section && <Badge variant="info">{student.Section.SectionName}</Badge>}
+              {student.Gender && <Badge variant="default">{student.Gender}</Badge>}
             </div>
           </div>
         </div>
@@ -66,33 +66,33 @@ function StudentProfilePage() {
         <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Personal Information</h3>
           <dl className="grid grid-cols-2 gap-4">
-            <Field label="Date of Birth" value={formatDate(student.dob)} />
-            <Field label="Gender" value={student.gender} />
-            <Field label="Religion" value={student.religion} />
-            <Field label="Nationality" value={student.nationality} />
-            <Field label="Contact Number" value={student.contact_number} />
-            <Field label="Address" value={student.address} />
+            <Field label="Date of Birth" value={formatDate(student.Dob)} />
+            <Field label="Gender" value={student.Gender} />
+            <Field label="Religion" value={student.Religion} />
+            <Field label="Nationality" value={student.Nationality} />
+            <Field label="Contact Number" value={student.ContactNumber} />
+            <Field label="Address" value={student.Address} />
           </dl>
         </Card>
 
         <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Guardian Information</h3>
           <dl className="grid grid-cols-2 gap-4">
-            <Field label="Guardian" value={student.guardian} />
-            <Field label="Relation" value={student.relation} />
-            <Field label="Occupation" value={student.occupation} />
-            <Field label="Guardian NIC" value={student.national_id} />
+            <Field label="Guardian" value={student.Guardian} />
+            <Field label="Relation" value={student.Relation} />
+            <Field label="Occupation" value={student.Occupation} />
+            <Field label="Guardian NIC" value={student.NationalId} />
           </dl>
         </Card>
 
         <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Academic Information</h3>
           <dl className="grid grid-cols-2 gap-4">
-            <Field label="Class" value={student.class?.class_name} />
-            <Field label="Section" value={student.section?.section_name} />
-            <Field label="Academic Year" value={student.academicYear?.name} />
-            <Field label="Previous School" value={student.last_school} />
-            <Field label="Enrolled On" value={formatDate(student.created_at)} />
+            <Field label="Class" value={student.Class?.ClassName} />
+            <Field label="Section" value={student.Section?.SectionName} />
+            <Field label="Academic Year" value={student.AcademicYear?.Name} />
+            <Field label="Previous School" value={student.LastSchool} />
+            <Field label="Enrolled On" value={formatDate(student.CreatedAt)} />
           </dl>
         </Card>
       </div>

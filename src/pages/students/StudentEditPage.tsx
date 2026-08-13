@@ -40,12 +40,12 @@ function StudentEditPage() {
   useEffect(() => {
     if (!student) return
     setForm({
-      first_name: student.first_name ?? '', last_name: student.last_name ?? '', guardian: student.guardian ?? '',
-      relation: student.relation ?? '', occupation: student.occupation ?? '', national_id: student.national_id ?? '',
-      dob: student.dob ?? '', gender: student.gender ?? '', religion: student.religion ?? '', address: student.address ?? '',
-      nationality: student.nationality ?? '', contact_number: student.contact_number ?? '',
-      class_id: String(student.class_id ?? ''), class_section_id: String(student.class_section_id ?? ''),
-      pre_school: student.last_school ?? '', user_name: student.user?.username ?? '', email: student.user?.email ?? '',
+      first_name: student.FirstName ?? '', last_name: student.LastName ?? '', guardian: student.Guardian ?? '',
+      relation: student.Relation ?? '', occupation: student.Occupation ?? '', national_id: student.NationalId ?? '',
+      dob: student.Dob ?? '', gender: student.Gender ?? '', religion: student.Religion ?? '', address: student.Address ?? '',
+      nationality: student.Nationality ?? '', contact_number: student.ContactNumber ?? '',
+      class_id: String(student.ClassId ?? ''), class_section_id: String(student.ClassSectionId ?? ''),
+      pre_school: student.LastSchool ?? '', user_name: student.User?.Username ?? '', email: student.User?.Email ?? '',
       password: '', photograph: null, nic: null, last_school_certificate: null,
     })
   }, [student])
@@ -142,8 +142,8 @@ function StudentEditPage() {
           <div className="border-t border-slate-200 pt-6">
             <h3 className="mb-3 text-sm font-semibold text-slate-900">Class Enrollment</h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Select label="Enroll in Class" required value={form.class_id} options={classes.map((c) => ({ value: c.id, label: c.class_name }))} onChange={(e) => handleClassChange(e.target.value)} placeholder="Select class" />
-              <Select label="Class Section" required value={form.class_section_id} options={sections.map((s) => ({ value: s.id, label: s.section_name }))} onChange={(e) => setField('class_section_id', e.target.value)} placeholder="Select section" disabled={!form.class_id} />
+              <Select label="Enroll in Class" required value={form.class_id} options={classes.map((c) => ({ value: c.Id, label: c.ClassName }))} onChange={(e) => handleClassChange(e.target.value)} placeholder="Select class" />
+              <Select label="Class Section" required value={form.class_section_id} options={sections.map((s) => ({ value: s.Id, label: s.SectionName }))} onChange={(e) => setField('class_section_id', e.target.value)} placeholder="Select section" disabled={!form.class_id} />
             </div>
           </div>
 

@@ -1,19 +1,20 @@
 import { api } from '../api'
 import type { AcademicYear, TuitionFee } from '../../types'
 
-const asList = <T>(response: T[] | { data: T[] }): T[] => (Array.isArray(response) ? response : (response.data ?? []))
+interface TuitionFeeResult {
+  TuitionFeeses: TuitionFee[]
+  ClassId: number
+}
 
 export const academicYearApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getAcademicYears: builder.query<AcademicYear[], void>({
       query: () => ({ url: '/adminstrator/academic-years', method: 'GET' }),
-      transformResponse: asList<AcademicYear>,
       providesTags: ['AcademicYear'],
     }),
 
     saveAcademicYear: builder.mutation<AcademicYear, { year: string }>({
       query: (payload) => ({ url: '/adminstrator/academic-years/save', method: 'POST', data: payload }),
-      transformResponse: (response: { data: AcademicYear }) => response.data,
       invalidatesTags: ['AcademicYear'],
     }),
 
@@ -24,7 +25,7 @@ export const academicYearApi = api.injectEndpoints({
 
     getTuitionFee: builder.query<TuitionFee[], number>({
       query: (classId) => ({ url: `/adminstrator/tuition-fee/edit/${classId}`, method: 'GET' }),
-      transformResponse: asList<TuitionFee>,
+      transformResponse: (data: TuitionFeeResult) => data.TuitionFeeses,
       providesTags: ['TuitionFee'],
     }),
   }),

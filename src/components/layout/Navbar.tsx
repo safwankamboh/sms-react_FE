@@ -36,11 +36,11 @@ function Navbar() {
           <div className="hidden h-7 w-px bg-slate-200 sm:block" />
           <div className="flex items-center gap-3">
             <div className="flex size-9 items-center justify-center bg-slate-900 text-sm font-bold text-white">
-              {user ? getInitials(user.username) : 'SA'}
+              {user ? getInitials(user.Username) : 'SA'}
             </div>
             <div className="hidden text-left sm:block">
-              <p className="text-sm font-semibold text-slate-800">{user?.username ?? 'Admin'}</p>
-              <p className="text-xs text-slate-500">{user?.email ?? ''}</p>
+              <p className="text-sm font-semibold text-slate-800">{user?.Username ?? 'Admin'}</p>
+              <p className="text-xs text-slate-500">{user?.Email ?? ''}</p>
             </div>
           </div>
           <button

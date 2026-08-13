@@ -2,12 +2,12 @@ import type { ClassSection, NewClass } from './class'
 import type { Teacher } from './teacher'
 
 export interface Course {
-  id: number
-  course_name: string
-  course_code: string | null
-  deleted_at: string | null
-  created_at: string
-  updated_at: string
+  Id: number
+  CourseName: string
+  CourseCode: string | null
+  DeletedAt: string | null
+  CreatedAt: string
+  UpdatedAt: string
 }
 
 export interface CourseFormData {
@@ -16,20 +16,20 @@ export interface CourseFormData {
 }
 
 export interface AssignCourse {
-  id: number
-  class_id: number
-  section_id: number
-  course_id: number
-  teacher_id: number | null
-  day: string | null
-  start_time: string | null
-  end_time: string | null
-  created_at: string
-  updated_at: string
-  course?: Course
-  teacher?: Teacher
-  class_section?: ClassSection
-  newclass?: NewClass
+  Id: number
+  ClassId: number
+  SectionId: number
+  CourseId: number
+  TeacherId: number | null
+  Day: string | null
+  StartTime: string | null
+  EndTime: string | null
+  CreatedAt: string
+  UpdatedAt: string
+  Course?: Course
+  Teacher?: Teacher
+  ClassSection?: ClassSection
+  Newclass?: NewClass
 }
 
 export interface AssignCourseFormData {

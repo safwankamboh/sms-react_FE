@@ -1,57 +1,56 @@
 import { api } from '../api'
-import type { PaginatedResponse, Student } from '../../types'
+import type { NewClass, PaginationMeta, Student } from '../../types'
+import { toPaginationMeta } from '../../utils/helpers'
 
-interface SaveStudentResponse {
-  success: boolean
-  message: string
-  data: { student: Student }
+interface StudentEditResult {
+  Student: Student
+  Classes: NewClass[]
 }
 
-interface StudentEditResponse {
-  student: Student
-  classes: unknown[]
+interface StudentProfileResult {
+  Class: NewClass
+  Student: Student
 }
 
-interface StudentProfileResponse {
-  class: unknown
-  student: Student
+interface SaveStudentResult {
+  Student: Student
+  Enrollment: unknown
+  StudentTuitionFee: unknown
 }
 
 export const studentsApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getStudents: builder.query<PaginatedResponse<Student>, number>({
+    getStudents: builder.query<{ data: Student[]; meta: PaginationMeta }, number>({
       query: (page) => ({ url: '/student/students', method: 'GET', params: { page } }),
+      transformResponse: (data: Student[], meta) => ({ data, meta: toPaginationMeta(meta?.Meta) }),
       providesTags: ['Student'],
     }),
 
     getTrashStudents: builder.query<Student[], void>({
       query: () => ({ url: '/student/trash-students-data', method: 'GET' }),
-      transformResponse: (response: { students?: PaginatedResponse<Student> }) => response.students?.data ?? [],
       providesTags: ['StudentTrash'],
     }),
 
     getStudentEdit: builder.query<Student, { classId: number; studentId: number }>({
       query: ({ classId, studentId }) => ({ url: `/student/edit/${classId}/${studentId}`, method: 'GET' }),
-      transformResponse: (response: StudentEditResponse) => response.student,
+      transformResponse: (data: StudentEditResult) => data.Student,
       providesTags: ['Student'],
     }),
 
     getStudentProfile: builder.query<Student, { classId: number; studentId: number }>({
       query: ({ classId, studentId }) => ({ url: `/student/profile/${classId}/student/${studentId}`, method: 'GET' }),
-      transformResponse: (response: StudentProfileResponse) => response.student,
+      transformResponse: (data: StudentProfileResult) => data.Student,
       providesTags: ['Student'],
     }),
 
     getStudentsByClass: builder.query<Student[], number>({
       query: (classId) => ({ url: '/student/students', method: 'GET', params: { class_id: classId } }),
-      transformResponse: (response: PaginatedResponse<Student> | Student[]) =>
-        Array.isArray(response) ? response : response.data,
       providesTags: ['Student'],
     }),
 
-    saveStudent: builder.mutation<SaveStudentResponse['data'], FormData>({
+    saveStudent: builder.mutation<Student, FormData>({
       query: (payload) => ({ url: '/student/save', method: 'POST', data: payload }),
-      transformResponse: (response: SaveStudentResponse) => response.data,
+      transformResponse: (data: SaveStudentResult) => data.Student,
       invalidatesTags: ['Student'],
     }),
 
@@ -59,7 +58,6 @@ export const studentsApi = api.injectEndpoints({
       query: ({ classId, studentId, payload }) => ({
         url: `/student/update/${classId}/${studentId}`, method: 'POST', data: payload,
       }),
-      transformResponse: (response: { data: { student: Student } }) => response.data.student,
       invalidatesTags: ['Student'],
     }),
 

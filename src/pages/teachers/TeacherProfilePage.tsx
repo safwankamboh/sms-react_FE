@@ -26,7 +26,7 @@ function TeacherProfilePage() {
   if (loading) return <Loader fullPage />
   if (!teacher) return null
 
-  const fullName = [teacher.first_name, teacher.last_name].filter(Boolean).join(' ')
+  const fullName = [teacher.FirstName, teacher.LastName].filter(Boolean).join(' ')
 
   return (
     <div className="space-y-6">
@@ -46,10 +46,10 @@ function TeacherProfilePage() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-900">{fullName || '—'}</h2>
-            <p className="text-sm text-slate-500">{teacher.user?.email ?? '—'}</p>
+            <p className="text-sm text-slate-500">{teacher.User?.Email ?? '—'}</p>
             <div className="mt-2 flex gap-2">
-              {teacher.subject_specialization && <Badge>{teacher.subject_specialization}</Badge>}
-              {teacher.quailification && <Badge variant="info">{teacher.quailification}</Badge>}
+              {teacher.SubjectSpecialization && <Badge>{teacher.SubjectSpecialization}</Badge>}
+              {teacher.Quailification && <Badge variant="info">{teacher.Quailification}</Badge>}
             </div>
           </div>
         </div>
@@ -59,19 +59,19 @@ function TeacherProfilePage() {
         <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Personal Details</h3>
           <dl className="grid grid-cols-2 gap-4">
-            <Field label="Phone" value={teacher.contact_number} />
-            <Field label="Gender" value={teacher.gender} />
-            <Field label="National ID" value={teacher.national_id} />
-            <Field label="Address" value={teacher.address} />
+            <Field label="Phone" value={teacher.ContactNumber} />
+            <Field label="Gender" value={teacher.Gender} />
+            <Field label="National ID" value={teacher.NationalId} />
+            <Field label="Address" value={teacher.Address} />
           </dl>
         </Card>
         <Card className="p-5 sm:p-6">
           <h3 className="mb-4 font-semibold text-slate-900">Employment Details</h3>
           <dl className="grid grid-cols-2 gap-4">
-            <Field label="Salary" value={formatCurrency(teacher.salary_amount)} />
-            <Field label="Experience" value={teacher.experience} />
-            <Field label="Qualification" value={teacher.quailification} />
-            <Field label="Specialization" value={teacher.subject_specialization} />
+            <Field label="Salary" value={formatCurrency(teacher.SalaryAmount)} />
+            <Field label="Experience" value={teacher.Experience} />
+            <Field label="Qualification" value={teacher.Quailification} />
+            <Field label="Specialization" value={teacher.SubjectSpecialization} />
           </dl>
         </Card>
       </div>

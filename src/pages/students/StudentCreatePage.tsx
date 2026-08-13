@@ -54,7 +54,7 @@ function StudentCreatePage() {
     }
 
     const payload = new FormData()
-    payload.append('academic_year_id', String(activeAcademicYear.id))
+    payload.append('academic_year_id', String(activeAcademicYear.Id))
     payload.append('first_name', form.first_name)
     payload.append('last_name', form.last_name)
     payload.append('guardian', form.guardian)
@@ -135,8 +135,8 @@ function StudentCreatePage() {
           <div className="border-t border-slate-200 pt-6">
             <h3 className="mb-3 text-sm font-semibold text-slate-900">Class Enrollment</h3>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Select label="Enroll in Class" required value={form.class_id} options={classes.map((c) => ({ value: c.id, label: c.class_name }))} onChange={(e) => handleClassChange(e.target.value)} placeholder="Select class" />
-              <Select label="Class Section" required value={form.class_section_id} options={sections.map((s) => ({ value: s.id, label: s.section_name }))} onChange={(e) => setField('class_section_id', e.target.value)} placeholder="Select section" disabled={!form.class_id} />
+              <Select label="Enroll in Class" required value={form.class_id} options={classes.map((c) => ({ value: c.Id, label: c.ClassName }))} onChange={(e) => handleClassChange(e.target.value)} placeholder="Select class" />
+              <Select label="Class Section" required value={form.class_section_id} options={sections.map((s) => ({ value: s.Id, label: s.SectionName }))} onChange={(e) => setField('class_section_id', e.target.value)} placeholder="Select section" disabled={!form.class_id} />
             </div>
           </div>
 
