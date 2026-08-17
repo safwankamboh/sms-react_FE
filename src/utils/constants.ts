@@ -3,6 +3,7 @@ export const API_BASE_URL =
 
 export const AUTH_TOKEN_KEY = 'sms_access_token'
 export const REFRESH_TOKEN_KEY = 'sms_refresh_token'
+export const ACTIVE_ACADEMIC_YEAR_KEY = 'sms_active_academic_year'
 
 export const APP_NAME = 'EduCore'
 

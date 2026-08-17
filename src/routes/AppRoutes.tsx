@@ -1,7 +1,10 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import ProtectedRoute from './ProtectedRoute'
+import RequireAcademicYear from './RequireAcademicYear'
 import LoginPage from '../pages/auth/LoginPage'
+import SelectAcademicYearPage from '../pages/auth/SelectAcademicYearPage'
+import SettingsPage from '../pages/settings/SettingsPage'
 import DashboardPage from '../pages/dashboard/DashboardPage'
 import StudentsPage from '../pages/students/StudentsPage'
 import StudentCreatePage from '../pages/students/StudentCreatePage'
@@ -35,37 +38,42 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
 
       <Route element={<ProtectedRoute />}>
-        <Route element={<DashboardLayout />}>
-          <Route index element={<DashboardPage />} />
+        <Route path="select-academic-year" element={<SelectAcademicYearPage />} />
 
-          <Route path="students" element={<StudentsPage />} />
-          <Route path="students/create" element={<StudentCreatePage />} />
-          <Route path="students/:classId/:studentId/edit" element={<StudentEditPage />} />
-          <Route path="students/:classId/:studentId/profile" element={<StudentProfilePage />} />
-          <Route path="attendance" element={<AttendancePage />} />
-          <Route path="attendance/report/:classId" element={<AttendanceReportPage />} />
+        <Route element={<RequireAcademicYear />}>
+          <Route element={<DashboardLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="settings" element={<SettingsPage />} />
 
-          <Route path="teachers" element={<TeachersPage />} />
-          <Route path="teachers/:teacherId/edit" element={<TeacherEditPage />} />
-          <Route path="teachers/:teacherId/profile" element={<TeacherProfilePage />} />
+            <Route path="students" element={<StudentsPage />} />
+            <Route path="students/create" element={<StudentCreatePage />} />
+            <Route path="students/:classId/:studentId/edit" element={<StudentEditPage />} />
+            <Route path="students/:classId/:studentId/profile" element={<StudentProfilePage />} />
+            <Route path="attendance" element={<AttendancePage />} />
+            <Route path="attendance/report/:classId" element={<AttendanceReportPage />} />
 
-          <Route path="administrator/classes" element={<ClassesPage />} />
-          <Route path="administrator/classes/create" element={<ClassCreatePage />} />
-          <Route path="administrator/classes/:classId/tuition-fee" element={<ManageClassFeePage />} />
-          <Route path="administrator/classes/:classId/sections" element={<SectionsPage />} />
-          <Route path="administrator/classes/:classId/sections/:sectionId/timetable" element={<ClassTimetablePage />} />
-          <Route path="administrator/academic-years" element={<AcademicYearsPage />} />
-          <Route path="administrator/academic-years/create" element={<AcademicYearCreatePage />} />
-          <Route path="administrator/tuition-fee" element={<TuitionFeeGeneratePage />} />
-          <Route path="administrator/break-schedule" element={<BreakSchedulePage />} />
+            <Route path="teachers" element={<TeachersPage />} />
+            <Route path="teachers/:teacherId/edit" element={<TeacherEditPage />} />
+            <Route path="teachers/:teacherId/profile" element={<TeacherProfilePage />} />
 
-          <Route path="courses" element={<CoursesPage />} />
-          <Route path="manage-courses" element={<AssignCoursesPage />} />
-          <Route path="exams" element={<ExamsPage />} />
+            <Route path="administrator/classes" element={<ClassesPage />} />
+            <Route path="administrator/classes/create" element={<ClassCreatePage />} />
+            <Route path="administrator/classes/:classId/tuition-fee" element={<ManageClassFeePage />} />
+            <Route path="administrator/classes/:classId/sections" element={<SectionsPage />} />
+            <Route path="administrator/classes/:classId/sections/:sectionId/timetable" element={<ClassTimetablePage />} />
+            <Route path="administrator/academic-years" element={<AcademicYearsPage />} />
+            <Route path="administrator/academic-years/create" element={<AcademicYearCreatePage />} />
+            <Route path="administrator/tuition-fee" element={<TuitionFeeGeneratePage />} />
+            <Route path="administrator/break-schedule" element={<BreakSchedulePage />} />
 
-          <Route path="financial/fees" element={<StudentFeesPage />} />
-          <Route path="financial/salaries" element={<TeacherSalariesPage />} />
-          <Route path="financial/expenses" element={<OtherExpensesPage />} />
+            <Route path="courses" element={<CoursesPage />} />
+            <Route path="manage-courses" element={<AssignCoursesPage />} />
+            <Route path="exams" element={<ExamsPage />} />
+
+            <Route path="financial/fees" element={<StudentFeesPage />} />
+            <Route path="financial/salaries" element={<TeacherSalariesPage />} />
+            <Route path="financial/expenses" element={<OtherExpensesPage />} />
+          </Route>
         </Route>
       </Route>
 

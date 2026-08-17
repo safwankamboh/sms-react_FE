@@ -15,6 +15,11 @@ export const academicYearApi = api.injectEndpoints({
       providesTags: ['AcademicYear'],
     }),
 
+    getAllAcademicYears: builder.query<AcademicYear[], void>({
+      query: () => ({ url: '/adminstrator/academic-years/all', method: 'GET' }),
+      providesTags: ['AcademicYear'],
+    }),
+
     saveAcademicYear: builder.mutation<AcademicYear, { academic_year_name: string; academic_year_start: string; academic_year_end: string }>({
       query: (payload) => ({ url: '/adminstrator/academic-years/save', method: 'POST', data: payload }),
       invalidatesTags: ['AcademicYear'],
@@ -45,6 +50,7 @@ export const academicYearApi = api.injectEndpoints({
 
 export const {
   useGetAcademicYearsQuery,
+  useGetAllAcademicYearsQuery,
   useSaveAcademicYearMutation,
   useSetDefaultAcademicYearMutation,
   useGetTuitionFeeQuery,

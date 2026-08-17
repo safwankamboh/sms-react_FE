@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   ReceiptText,
   School,
+  Settings,
   Users,
   X,
   Layers,
@@ -36,6 +37,7 @@ const navGroups: NavGroup[] = [
     label: 'Workspace',
     items: [
       { name: 'Dashboard', to: '/', icon: LayoutDashboard, end: true },
+      { name: 'Settings', to: '/settings', icon: Settings, end: true },
     ],
   },
   {

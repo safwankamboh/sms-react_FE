@@ -1,5 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import { API_BASE_URL, AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '../utils/constants'
+import { ACTIVE_ACADEMIC_YEAR_KEY, API_BASE_URL, AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '../utils/constants'
 
 export interface NormalizedError {
   status: number | null
@@ -20,6 +20,22 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use((config) => {
   const token = localStorage.getItem(AUTH_TOKEN_KEY)
   if (token) config.headers.Authorization = `Bearer ${token}`
+
+  // Tells the backend's `academic-year` middleware which academic year the
+  // user picked for this session — see ResolveAcademicYear.php. Absent
+  // until a pick is made (e.g. right after login, before the mandatory
+  // picker screen), in which case the backend falls back to the school-wide
+  // default on its own.
+  const storedYear = localStorage.getItem(ACTIVE_ACADEMIC_YEAR_KEY)
+  if (storedYear) {
+    try {
+      const year = JSON.parse(storedYear) as { Id?: number }
+      if (year.Id) config.headers['X-Academic-Year-Id'] = String(year.Id)
+    } catch {
+      // ignore malformed stored value — backend falls back to the default
+    }
+  }
+
   return config
 })
 
