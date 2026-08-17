@@ -1,8 +1,5 @@
 import { GraduationCap, Users, BookOpen, CalendarCheck, TrendingUp, School, DollarSign } from 'lucide-react'
-import { useGetStudentsQuery } from '../../store/api/studentsApi'
-import { useGetTeachersQuery } from '../../store/api/teachersApi'
-import { useGetGlobalClassesQuery } from '../../store/api/classesApi'
-import { useGetCoursesQuery } from '../../store/api/coursesApi'
+import { useGetDashboardSummaryQuery } from '../../store/api/dashboardApi'
 import { useAuth } from '../../context/AuthContext'
 import Card from '../../components/common/Card'
 import PageHeader from '../../components/common/PageHeader'
@@ -28,16 +25,13 @@ function StatCard({ label, value, icon: Icon, sub }: { label: string; value: str
 
 function DashboardPage() {
   const { user } = useAuth()
-  const { data: studentsPage } = useGetStudentsQuery(1)
-  const { data: teachersPage } = useGetTeachersQuery(1)
-  const { data: classes = [] } = useGetGlobalClassesQuery()
-  const { data: coursesPage } = useGetCoursesQuery(1)
+  const { data: summary } = useGetDashboardSummaryQuery()
 
   const stats = [
-    { label: 'Total Students', value: studentsPage?.meta.total ?? 0, icon: GraduationCap, sub: 'enrolled this year' },
-    { label: 'Total Teachers', value: teachersPage?.meta.total ?? 0, icon: Users, sub: 'active staff' },
-    { label: 'Total Classes', value: classes.length, icon: School, sub: 'across all grades' },
-    { label: 'Total Courses', value: coursesPage?.meta.total ?? 0, icon: BookOpen, sub: 'in curriculum' },
+    { label: 'Total Students', value: summary?.TotalStudents ?? 0, icon: GraduationCap, sub: `enrolled in ${summary?.AcademicYear?.Name ?? 'the active year'}` },
+    { label: 'Total Teachers', value: summary?.TotalTeachers ?? 0, icon: Users, sub: 'active staff' },
+    { label: 'Total Classes', value: summary?.TotalClasses ?? 0, icon: School, sub: 'across all grades' },
+    { label: 'Total Courses', value: summary?.TotalCourses ?? 0, icon: BookOpen, sub: 'in curriculum' },
   ]
 
   return (
