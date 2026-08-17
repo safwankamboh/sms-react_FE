@@ -1,6 +1,19 @@
 import { api } from '../api'
-import type { AssignCourse, Course, PaginationMeta } from '../../types'
+import type { AssignCourse, AssignCourseFormData, ClassSection, Course, NewClass, PaginationMeta, Teacher } from '../../types'
 import { toPaginationMeta } from '../../utils/helpers'
+
+interface CourseScheduleResult {
+  AssignCourses: AssignCourse[]
+  Class: NewClass
+  Section: ClassSection
+}
+
+interface AssignCourseFormOptions {
+  Class: NewClass
+  Courses: Course[]
+  Teachers: Teacher[]
+  Section: ClassSection
+}
 
 export const coursesApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -35,13 +48,29 @@ export const coursesApi = api.injectEndpoints({
       invalidatesTags: ['Course', 'CourseTrash'],
     }),
 
-    getAssignedCourses: builder.query<AssignCourse[], void>({
-      query: () => ({ url: '/manage-courses', method: 'GET' }),
+    getCourseSchedule: builder.query<CourseScheduleResult, { classId: number; sectionId: number }>({
+      query: ({ classId, sectionId }) => ({ url: `/manage-courses/course-schedule/class/${classId}/section/${sectionId}`, method: 'GET' }),
       providesTags: ['AssignedCourse'],
     }),
 
-    assignCourse: builder.mutation<unknown, Record<string, unknown>>({
-      query: (payload) => ({ url: '/manage-courses/save', method: 'POST', data: payload }),
+    getAssignCourseForm: builder.query<AssignCourseFormOptions, { classId: number; sectionId: number }>({
+      query: ({ classId, sectionId }) => ({ url: `/manage-courses/create/${classId}/${sectionId}`, method: 'GET' }),
+    }),
+
+    assignCourse: builder.mutation<AssignCourse, { classId: number; payload: AssignCourseFormData }>({
+      query: ({ classId, payload }) => ({ url: `/manage-courses/${classId}/assign`, method: 'POST', data: payload }),
+      invalidatesTags: ['AssignedCourse'],
+    }),
+
+    updateAssignCourse: builder.mutation<AssignCourse, { classId: number; sectionId: number; assignCourseId: number; payload: AssignCourseFormData }>({
+      query: ({ classId, sectionId, assignCourseId, payload }) => ({
+        url: `/manage-courses/${classId}/section/${sectionId}/update/${assignCourseId}`, method: 'POST', data: payload,
+      }),
+      invalidatesTags: ['AssignedCourse'],
+    }),
+
+    deleteAssignCourse: builder.mutation<void, number>({
+      query: (assignCourseId) => ({ url: `/manage-courses/${assignCourseId}/delete`, method: 'GET' }),
       invalidatesTags: ['AssignedCourse'],
     }),
   }),
@@ -54,6 +83,9 @@ export const {
   useUpdateCourseMutation,
   useSoftDeleteCourseMutation,
   useRestoreCourseMutation,
-  useGetAssignedCoursesQuery,
+  useGetCourseScheduleQuery,
+  useGetAssignCourseFormQuery,
   useAssignCourseMutation,
+  useUpdateAssignCourseMutation,
+  useDeleteAssignCourseMutation,
 } = coursesApi

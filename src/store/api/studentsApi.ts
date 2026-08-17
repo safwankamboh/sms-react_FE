@@ -1,5 +1,5 @@
 import { api } from '../api'
-import type { NewClass, PaginationMeta, Student } from '../../types'
+import type { AttendanceReport, NewClass, PaginationMeta, Student } from '../../types'
 import { toPaginationMeta } from '../../utils/helpers'
 
 interface StudentEditResult {
@@ -78,6 +78,14 @@ export const studentsApi = api.injectEndpoints({
         data: body,
       }),
     }),
+
+    getAttendanceReport: builder.query<AttendanceReport, { classId: string; date?: string; studentId?: string }>({
+      query: ({ classId, date, studentId }) => ({
+        url: `/student/attendance-monitring/attendance-view/class/${classId}`,
+        method: 'GET',
+        params: { date, student_id: studentId },
+      }),
+    }),
   }),
 })
 
@@ -93,4 +101,5 @@ export const {
   useSoftDeleteStudentMutation,
   useRestoreStudentMutation,
   useSubmitAttendanceMutation,
+  useGetAttendanceReportQuery,
 } = studentsApi

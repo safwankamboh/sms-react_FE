@@ -1,5 +1,14 @@
 import { api } from '../api'
-import type { ExamSchedule, ExamType } from '../../types'
+import type { AssignCourse, ClassSection, ExamSchedule, ExamScheduleFormData, ExamType, Teacher } from '../../types'
+
+interface ExamScheduleFormOptions {
+  Courses: AssignCourse[]
+  Teachers: Teacher[]
+  ExamType: ExamType | null
+  MinDate: string | null
+  MaxDate: string | null
+  ClassSections: ClassSection[]
+}
 
 export const examsApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,12 +17,12 @@ export const examsApi = api.injectEndpoints({
       providesTags: ['ExamType'],
     }),
 
-    saveExamType: builder.mutation<ExamType, { exam_name: string }>({
+    saveExamType: builder.mutation<ExamType, { exam_type: string }>({
       query: (payload) => ({ url: '/exams/exam-typeForm/submit', method: 'POST', data: payload }),
       invalidatesTags: ['ExamType'],
     }),
 
-    updateExamType: builder.mutation<ExamType, { examTypeId: number; payload: { exam_name: string } }>({
+    updateExamType: builder.mutation<ExamType, { examTypeId: number; payload: { exam_type: string } }>({
       query: ({ examTypeId, payload }) => ({ url: `/exams/update-exam-typeForm/submit/${examTypeId}`, method: 'POST', data: payload }),
       invalidatesTags: ['ExamType'],
     }),
@@ -28,7 +37,11 @@ export const examsApi = api.injectEndpoints({
       providesTags: ['ExamSchedule'],
     }),
 
-    saveExamSchedule: builder.mutation<unknown, Record<string, unknown>>({
+    getExamScheduleForm: builder.query<ExamScheduleFormOptions, number>({
+      query: (classId) => ({ url: `/exams/exam-schedule-class/${classId}/form`, method: 'GET' }),
+    }),
+
+    saveExamSchedule: builder.mutation<unknown, ExamScheduleFormData>({
       query: (payload) => ({ url: '/exams/exam-schedule-class', method: 'POST', data: payload }),
       invalidatesTags: ['ExamSchedule'],
     }),
@@ -41,5 +54,6 @@ export const {
   useUpdateExamTypeMutation,
   useDeleteExamTypeMutation,
   useGetExamScheduleQuery,
+  useGetExamScheduleFormQuery,
   useSaveExamScheduleMutation,
 } = examsApi

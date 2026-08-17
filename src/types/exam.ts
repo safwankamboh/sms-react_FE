@@ -1,37 +1,43 @@
-import type { NewClass } from './class'
-import type { Course } from './course'
-
 export interface ExamType {
   Id: number
-  ExamName: string
+  ExamType: string
   CreatedAt: string
   UpdatedAt: string
 }
 
 export interface ExamTypeFormData {
-  exam_name: string
+  exam_type: string
 }
 
+// No relations exist on the backend ExamSchedule model — pages resolve
+// Class/Course/Teacher/ExamType names client-side from already-fetched
+// lookup lists rather than via eager-loaded objects.
 export interface ExamSchedule {
   Id: number
-  ClassId: number
+  AcademicYearId: number
   ExamTypeId: number
+  ClassId: number
   CourseId: number
-  Date: string
-  StartTime: string
-  EndTime: string
+  ExamTeacherId: number
+  ExamClassId: number
+  ExamClassSectionId: number
+  ExamDate: string
   CreatedAt: string
   UpdatedAt: string
-  Course?: Course
-  ExamType?: ExamType
-  Newclass?: NewClass
+}
+
+// Matches ExamScheduleController::submitExamScheduleForm's validation
+// (`exam_schedule.*.exam_teacher`, `exam_schedule.*.exam_date`) — an array
+// of rows under one `exam_schedule` key.
+export interface ExamScheduleRow {
+  exam_type: string
+  course: string
+  class: string
+  teacher: string
+  section: string
+  exam_date: string
 }
 
 export interface ExamScheduleFormData {
-  class_id: string
-  exam_type_id: string
-  course_id: string
-  date: string
-  start_time: string
-  end_time: string
+  exam_schedule: ExamScheduleRow[]
 }

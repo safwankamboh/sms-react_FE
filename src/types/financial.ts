@@ -22,44 +22,104 @@ export interface TuitionFee {
 
 export interface StudentTuitionFee {
   Id: number
-  StudentId: number
-  TuitionFeeId: number
   Month: string
-  PaidAmount: number | null
-  PaidDate: string | null
-  IsPaid: number
+  AcademicYearId: number
+  ClassId: number
+  StudentId: number
+  AdmissionFee: number | null
+  ClassFeeAmount: number
+  FeeDiscount: number | null
+  DiscountReason: string | null
+  ReceivingAmount: number | null
+  ReceivingDate: string | null
+  PaymentStatus: boolean
   CreatedAt: string
   UpdatedAt: string
-  Student?: Student
-  TuitionFee?: TuitionFee
+}
+
+// `financialController::viewAllClassesFee` — a class's students with fee
+// totals computed server-side, not a bare StudentTuitionFee list.
+export interface StudentWithFeeTotals extends Student {
+  TotalFee: number
+  TotalReceived: number
+}
+
+export interface ClassFeeSummary {
+  Students: StudentWithFeeTotals[]
+  TotalStudentsFee: number
+  TotalFeeCollection: number
+  TotalPandings: number
+}
+
+// `financialController::getOutstandingStudentwise` — students who still
+// need a fee row generated for the given month.
+export interface StudentFeeOutstanding {
+  student_id: number
+  student_name: string
+  class_fee_amount: number
+  class_id: number
+  academic_year_id: number
+  month: string
+}
+
+// `financialController::viewFeeCollectForm` — one row per month for a
+// student, `month_id` only present once a TuitionFee row exists for it.
+export interface FeeCollectionRow {
+  month_id?: number
+  month: string
+  fee_amount: number
+  receiving_amount: number
+  status: 'Paid' | 'Unpaid' | 'Fee not set'
 }
 
 export interface TeacherSalary {
   Id: number
-  TeacherId: number
   Month: string
-  Amount: number
-  PaidAmount: number | null
-  PaidDate: string | null
-  IsPaid: number
+  AcademicYearId: number
+  TeacherId: number
+  CreatedDate: string
+  SalaryAmount: number
+  BonusAmount: number | null
+  BonusReason: string | null
+  PayingAmount: number | null
+  PayingDate: string | null
+  PaymentStatus: boolean
   CreatedAt: string
   UpdatedAt: string
   Teacher?: Teacher
 }
 
+// `TeachersSalaryController::getTeachersOutstandings` — teachers who still
+// need a salary row generated for the given month.
+export interface TeacherSalaryOutstanding {
+  teacher_id: number
+  teacher_name: string
+  salary_amount: number
+  academic_year_id: number
+  month: string
+}
+
+// `TeachersSalaryController::viewTeacherSalary` — one row per month for a
+// teacher, `month_id` only present once a TeachersSalary row exists for it.
+export interface TeacherSalaryMonthRow {
+  month_id?: number
+  month: string
+  salary_amount: number
+  status: 'Paid' | 'Unpaid'
+}
+
 export interface OtherExpanse {
   Id: number
-  Title: string
-  Amount: number
-  Description: string | null
-  Date: string
+  AcademicYearId: number
+  ExpanseName: string
+  ExpanseAmount: number
+  BillingDate: string
   CreatedAt: string
   UpdatedAt: string
 }
 
 export interface OtherExpanseFormData {
-  title: string
-  amount: string
-  description?: string
-  date: string
+  expanse_name: string
+  expanse_amount: string
+  billing_date: string
 }

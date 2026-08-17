@@ -41,10 +41,10 @@ const navGroups: NavGroup[] = [
   {
     label: 'Academic',
     items: [
-      { name: 'Students', to: '/students', icon: GraduationCap },
-      { name: 'Teachers', to: '/teachers', icon: Users },
-      { name: 'Attendance', to: '/attendance', icon: CalendarCheck },
-      { name: 'Classes', to: '/administrator/classes', icon: Building2 },
+      { name: 'Students', to: '/students', icon: GraduationCap, end: true },
+      { name: 'Teachers', to: '/teachers', icon: Users, end: true },
+      { name: 'Attendance', to: '/attendance', icon: CalendarCheck, end: true },
+      { name: 'Classes', to: '/administrator/classes', icon: Building2, end: true },
       { name: 'Courses', to: '/courses', icon: BookOpen },
       { name: 'Assign Courses', to: '/manage-courses', icon: BookMarked },
       { name: 'Exams', to: '/exams', icon: School },
@@ -62,7 +62,7 @@ const navGroups: NavGroup[] = [
     label: 'Administrator',
     items: [
       { name: 'Acadmic Year', to: '/administrator/academic-years/create', icon: Layers },
-      { name: 'Manage Acadmic Year', to: '/administrator/academic-years', icon: Layers },
+      { name: 'Manage Acadmic Year', to: '/administrator/academic-years', icon: Layers, end: true },
       { name: 'Tution Fee', to: '/administrator/tuition-fee', icon: DollarSign },
       { name: 'Create New Class', to: '/administrator/classes/create', icon: Building2 },
       { name: 'Break Schedule', to: '/administrator/break-schedule', icon: ClipboardList },

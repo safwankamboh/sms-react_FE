@@ -8,6 +8,7 @@ import StudentCreatePage from '../pages/students/StudentCreatePage'
 import StudentEditPage from '../pages/students/StudentEditPage'
 import StudentProfilePage from '../pages/students/StudentProfilePage'
 import AttendancePage from '../pages/students/AttendancePage'
+import AttendanceReportPage from '../pages/students/AttendanceReportPage'
 import TeachersPage from '../pages/teachers/TeachersPage'
 import TeacherEditPage from '../pages/teachers/TeacherEditPage'
 import TeacherProfilePage from '../pages/teachers/TeacherProfilePage'
@@ -18,6 +19,14 @@ import AcademicYearsPage from '../pages/administrator/AcademicYearsPage'
 import AcademicYearCreatePage from '../pages/administrator/AcademicYearCreatePage'
 import TuitionFeeGeneratePage from '../pages/administrator/TuitionFeeGeneratePage'
 import BreakSchedulePage from '../pages/administrator/BreakSchedulePage'
+import SectionsPage from '../pages/administrator/SectionsPage'
+import ClassTimetablePage from '../pages/administrator/ClassTimetablePage'
+import CoursesPage from '../pages/courses/CoursesPage'
+import AssignCoursesPage from '../pages/courses/AssignCoursesPage'
+import ExamsPage from '../pages/exams/ExamsPage'
+import OtherExpensesPage from '../pages/financial/OtherExpensesPage'
+import TeacherSalariesPage from '../pages/financial/TeacherSalariesPage'
+import StudentFeesPage from '../pages/financial/StudentFeesPage'
 import NotFound from '../pages/setup/NotFound'
 
 function AppRoutes() {
@@ -34,6 +43,7 @@ function AppRoutes() {
           <Route path="students/:classId/:studentId/edit" element={<StudentEditPage />} />
           <Route path="students/:classId/:studentId/profile" element={<StudentProfilePage />} />
           <Route path="attendance" element={<AttendancePage />} />
+          <Route path="attendance/report/:classId" element={<AttendanceReportPage />} />
 
           <Route path="teachers" element={<TeachersPage />} />
           <Route path="teachers/:teacherId/edit" element={<TeacherEditPage />} />
@@ -42,10 +52,20 @@ function AppRoutes() {
           <Route path="administrator/classes" element={<ClassesPage />} />
           <Route path="administrator/classes/create" element={<ClassCreatePage />} />
           <Route path="administrator/classes/:classId/tuition-fee" element={<ManageClassFeePage />} />
+          <Route path="administrator/classes/:classId/sections" element={<SectionsPage />} />
+          <Route path="administrator/classes/:classId/sections/:sectionId/timetable" element={<ClassTimetablePage />} />
           <Route path="administrator/academic-years" element={<AcademicYearsPage />} />
           <Route path="administrator/academic-years/create" element={<AcademicYearCreatePage />} />
           <Route path="administrator/tuition-fee" element={<TuitionFeeGeneratePage />} />
           <Route path="administrator/break-schedule" element={<BreakSchedulePage />} />
+
+          <Route path="courses" element={<CoursesPage />} />
+          <Route path="manage-courses" element={<AssignCoursesPage />} />
+          <Route path="exams" element={<ExamsPage />} />
+
+          <Route path="financial/fees" element={<StudentFeesPage />} />
+          <Route path="financial/salaries" element={<TeacherSalariesPage />} />
+          <Route path="financial/expenses" element={<OtherExpensesPage />} />
         </Route>
       </Route>
 

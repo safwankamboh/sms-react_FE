@@ -1,13 +1,19 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { BarChart3 } from 'lucide-react'
 import { useGetGlobalClassesQuery, useGetSectionsQuery } from '../../store/api/classesApi'
 import { useLazyGetStudentsByClassQuery, useSubmitAttendanceMutation } from '../../store/api/studentsApi'
 import type { AttendanceRecord } from '../../types'
 import { Card, PageHeader, Select, Button, Loader } from '../../components/common'
 import { formatDate } from '../../utils/helpers'
 
-type Status = 'present' | 'absent' | 'late'
+// Matches AttendanceController::submitStudentsAttendance's switch cases
+// exactly — 'late' isn't a status the backend recognizes (it silently
+// no-ops for anything other than present/absent/leave).
+type Status = 'present' | 'absent' | 'leave'
 
 function AttendancePage() {
+  const navigate = useNavigate()
   const [classId, setClassId] = useState('')
   const [sectionId, setSectionId] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
@@ -46,7 +52,9 @@ function AttendancePage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Academic" title="Attendance" description="Mark daily student attendance by class." />
+      <PageHeader eyebrow="Academic" title="Attendance" description="Mark daily student attendance by class."
+        actions={<Button variant="secondary" icon={<BarChart3 size={16} />} onClick={() => navigate(`/attendance/report/${classId}`)} disabled={!classId}>View Report</Button>}
+      />
 
       <Card className="p-5 sm:p-6">
         <div className="grid gap-4 sm:grid-cols-4">
@@ -81,7 +89,7 @@ function AttendancePage() {
                       <p className="text-xs text-slate-500">Guardian: {student.Guardian ?? '—'}</p>
                     </div>
                     <div className="flex gap-2">
-                      {(['present', 'absent', 'late'] as Status[]).map((s) => (
+                      {(['present', 'absent', 'leave'] as Status[]).map((s) => (
                         <button
                           key={s}
                           type="button"
