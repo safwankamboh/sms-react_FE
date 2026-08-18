@@ -6,6 +6,8 @@ interface Session {
   user: AuthUser
   token: string
   refreshToken: string
+  permissions: string[]
+  modules: string[]
 }
 
 interface AuthContextType {
@@ -13,9 +15,16 @@ interface AuthContextType {
   token: string | null
   refreshToken: string | null
   activeAcademicYear: AcademicYear | null
+  // UX gating only (menu/route/button visibility) — never the real check.
+  // Every backend endpoint enforces its own authorization regardless of
+  // what's in here (Phase 3 plan §M, Rule 12).
+  permissions: string[]
+  modules: string[]
   isAuthenticated: boolean
   setSession: (session: Session) => void
   setActiveAcademicYear: (year: AcademicYear) => void
+  hasPermission: (permission: string) => boolean
+  hasModule: (module: string) => boolean
   logout: () => void
 }
 
@@ -36,12 +45,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem(AUTH_TOKEN_KEY))
   const [refreshToken, setRefreshToken] = useState<string | null>(() => localStorage.getItem(REFRESH_TOKEN_KEY))
   const [activeAcademicYear, setActiveAcademicYearState] = useState<AcademicYear | null>(() => readStoredAcademicYear())
+  // Not persisted, same as `user` — both reset on a hard page refresh
+  // (a known, accepted gap; see AuthContext's own prior notes on `user`).
+  const [permissions, setPermissions] = useState<string[]>([])
+  const [modules, setModules] = useState<string[]>([])
 
   const logout = () => {
     setUser(null)
     setToken(null)
     setRefreshToken(null)
     setActiveAcademicYearState(null)
+    setPermissions([])
+    setModules([])
     localStorage.removeItem(AUTH_TOKEN_KEY)
     localStorage.removeItem(REFRESH_TOKEN_KEY)
     localStorage.removeItem(ACTIVE_ACADEMIC_YEAR_KEY)
@@ -51,6 +66,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(session.user)
     setToken(session.token)
     setRefreshToken(session.refreshToken)
+    setPermissions(session.permissions)
+    setModules(session.modules)
     localStorage.setItem(AUTH_TOKEN_KEY, session.token)
     localStorage.setItem(REFRESH_TOKEN_KEY, session.refreshToken)
 
@@ -59,6 +76,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setActiveAcademicYearState(null)
     localStorage.removeItem(ACTIVE_ACADEMIC_YEAR_KEY)
   }
+
+  const hasPermission = (permission: string) => permissions.includes(permission)
+  const hasModule = (module: string) => modules.includes(module)
 
   const setActiveAcademicYear = (year: AcademicYear) => {
     setActiveAcademicYearState(year)
@@ -81,9 +101,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         token,
         refreshToken,
         activeAcademicYear,
+        permissions,
+        modules,
         isAuthenticated: Boolean(token),
         setSession,
         setActiveAcademicYear,
+        hasPermission,
+        hasModule,
         logout,
       }}
     >

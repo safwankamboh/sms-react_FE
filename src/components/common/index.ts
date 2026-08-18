@@ -1,5 +1,6 @@
 export { default as Badge } from './Badge'
 export { default as Button } from './Button'
+export { default as Can } from './Can'
 export { default as Card } from './Card'
 export { default as ConfirmDialog } from './ConfirmDialog'
 export { default as DatePicker } from './DatePicker'

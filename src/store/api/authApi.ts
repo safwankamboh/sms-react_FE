@@ -6,6 +6,12 @@ interface LoginResult {
   AccessToken: string
   RefreshToken: string
   ActiveAcademicYear: AcademicYear | null
+  // Every permission this user holds + every module they can actually do
+  // something in (already enabled-for-school AND permitted, resolved
+  // server-side — see App\Models\User::accessibleModuleSlugs()). UX gating
+  // only; every backend endpoint enforces its own authorization regardless.
+  Permissions: string[]
+  Modules: string[]
 }
 
 export const authApi = api.injectEndpoints({
