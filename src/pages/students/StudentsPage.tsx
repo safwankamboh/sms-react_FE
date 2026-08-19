@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { Plus, Eye, Trash2, RotateCcw, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Plus, Eye, UserMinus, RotateCcw, User, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   useGetStudentsQuery,
-  useGetTrashStudentsQuery,
   useSoftDeleteStudentMutation,
   useRestoreStudentMutation,
 } from "../../store/api/studentsApi";
@@ -14,35 +13,64 @@ import {
   Badge,
   Pagination,
   ConfirmDialog,
+  Input,
+  Select,
 } from "../../components/common";
 import type { Column } from "../../components/common/Table";
-import type { Student } from "../../types";
+import type { Student, StudentStatus } from "../../types";
 import { formatDate } from "../../utils/helpers";
+
+const STATUS_FILTER_OPTIONS: { value: string; label: string }[] = [
+  { value: "active", label: "Active" },
+  { value: "all", label: "All statuses" },
+  { value: "inactive", label: "Inactive" },
+  { value: "transferred", label: "Transferred" },
+  { value: "withdrawn", label: "Withdrawn" },
+  { value: "graduated", label: "Graduated" },
+];
+
+const STATUS_BADGE_VARIANT: Record<StudentStatus, "success" | "default" | "info" | "warning"> = {
+  active: "success",
+  inactive: "default",
+  transferred: "info",
+  withdrawn: "warning",
+  graduated: "success",
+};
 
 function StudentsPage() {
   const navigate = useNavigate();
-  const [deleteId, setDeleteId] = useState<{
+  const [deactivateTarget, setDeactivateTarget] = useState<{
     classId: number;
     studentId: number;
   } | null>(null);
-  const [tab, setTab] = useState<"active" | "trash">("active");
   const [page, setPage] = useState(1);
+  const [status, setStatus] = useState("active");
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+
+  // No debounce utility exists in this app yet — a small local timer is
+  // the lightest way to avoid firing a request on every keystroke.
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(searchInput);
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   const { data: studentsPage, isFetching: loadingStudents } =
-    useGetStudentsQuery(page);
-  const { data: trash = [], isFetching: loadingTrash } =
-    useGetTrashStudentsQuery(undefined, { skip: tab !== "trash" });
+    useGetStudentsQuery({ page, search: search || undefined, status });
 
-  const [softDeleteStudent, { isLoading: deleting }] =
+  const [softDeleteStudent, { isLoading: deactivating }] =
     useSoftDeleteStudentMutation();
   const [restoreStudent] = useRestoreStudentMutation();
 
   const list = studentsPage?.data ?? [];
 
-  const handleDelete = async () => {
-    if (!deleteId) return;
-    await softDeleteStudent(deleteId);
-    setDeleteId(null);
+  const handleDeactivate = async () => {
+    if (!deactivateTarget) return;
+    await softDeleteStudent(deactivateTarget);
+    setDeactivateTarget(null);
   };
 
   const columns: Column<Student>[] = [
@@ -63,6 +91,12 @@ function StudentsPage() {
         </div>
       ),
     },
+    { key: "gr_number", header: "GR Number", render: (s) => s.GrNumber },
+    {
+      key: "status",
+      header: "Status",
+      render: (s) => <Badge variant={STATUS_BADGE_VARIANT[s.Status]}>{s.Status}</Badge>,
+    },
     { key: "guardian", header: "Guardian", render: (s) => s.Guardian },
     {
       key: "class",
@@ -73,11 +107,6 @@ function StudentsPage() {
       key: "section",
       header: "Section",
       render: (s) => s.Section?.SectionName ?? "—",
-    },
-    {
-      key: "gender",
-      header: "Gender",
-      render: (s) => <Badge>{s.Gender}</Badge>,
     },
     {
       key: "created_at",
@@ -97,52 +126,29 @@ function StudentsPage() {
           >
             {null}
           </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            icon={<Trash2 size={14} />}
-            className="text-rose-500 hover:text-rose-700"
-            onClick={() =>
-              setDeleteId({ classId: s.ClassId, studentId: s.Id })
-            }
-          >
-            {null}
-          </Button>
+          {s.Status === "active" ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              icon={<UserMinus size={14} />}
+              className="text-rose-500 hover:text-rose-700"
+              onClick={() =>
+                setDeactivateTarget({ classId: s.ClassId, studentId: s.Id })
+              }
+            >
+              {null}
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              variant="ghost"
+              icon={<RotateCcw size={14} />}
+              onClick={() => restoreStudent({ classId: s.ClassId, studentId: s.Id })}
+            >
+              {null}
+            </Button>
+          )}
         </div>
-      ),
-    },
-  ];
-
-  const trashColumns: Column<Student>[] = [
-    {
-      key: "name",
-      header: "Name",
-      render: (s) => `${s.FirstName} ${s.LastName}`,
-    },
-    {
-      key: "class",
-      header: "Class",
-      render: (s) => s.Class?.ClassName ?? "—",
-    },
-    {
-      key: "deleted",
-      header: "Deleted At",
-      render: (s) => formatDate(s.DeletedAt),
-    },
-    {
-      key: "actions",
-      header: "Actions",
-      render: (s) => (
-        <Button
-          size="sm"
-          variant="secondary"
-          icon={<RotateCcw size={14} />}
-          onClick={() =>
-            restoreStudent({ classId: s.ClassId, studentId: s.Id })
-          }
-        >
-          Restore
-        </Button>
       ),
     },
   ];
@@ -154,65 +160,58 @@ function StudentsPage() {
         title="Students"
         description="Manage student registrations, profiles and records."
         actions={
-          <div className="flex gap-2">
-            <Button
-              variant={tab === "active" ? "primary" : "secondary"}
-              size="sm"
-              onClick={() => setTab("active")}
-            >
-              Active
-            </Button>
-            <Button
-              variant={tab === "trash" ? "primary" : "secondary"}
-              size="sm"
-              onClick={() => setTab("trash")}
-            >
-              Trash
-            </Button>
-            <Button
-              icon={<Plus size={16} />}
-              onClick={() => navigate("/students/create")}
-            >
-              Add Student
-            </Button>
-          </div>
+          <Button
+            icon={<Plus size={16} />}
+            onClick={() => navigate("/students/create")}
+          >
+            Add Student
+          </Button>
         }
       />
 
-      {tab === "active" ? (
-        <>
-          <Table
-            columns={columns}
-            data={list}
-            loading={loadingStudents}
-            emptyTitle="No students found"
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="sm:w-72">
+          <Input
+            icon={Search}
+            placeholder="Search by GR number, name, or contact"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
           />
-          <Pagination
-            currentPage={studentsPage?.meta.currentPage ?? 1}
-            lastPage={studentsPage?.meta.lastPage ?? 1}
-            onPageChange={setPage}
-            total={studentsPage?.meta.total ?? 0}
-            from={studentsPage?.meta.from ?? 0}
-            to={studentsPage?.meta.to ?? 0}
+        </div>
+        <div className="sm:w-48">
+          <Select
+            value={status}
+            options={STATUS_FILTER_OPTIONS}
+            onChange={(e) => { setStatus(e.target.value); setPage(1) }}
+            placeholder=""
           />
-        </>
-      ) : (
-        <Table
-          columns={trashColumns}
-          data={trash}
-          loading={loadingTrash}
-          emptyTitle="Trash is empty"
-        />
-      )}
+        </div>
+      </div>
+
+      <Table
+        columns={columns}
+        data={list}
+        loading={loadingStudents}
+        emptyTitle="No students found"
+        rowKey="Id"
+      />
+      <Pagination
+        currentPage={studentsPage?.meta.currentPage ?? 1}
+        lastPage={studentsPage?.meta.lastPage ?? 1}
+        onPageChange={setPage}
+        total={studentsPage?.meta.total ?? 0}
+        from={studentsPage?.meta.from ?? 0}
+        to={studentsPage?.meta.to ?? 0}
+      />
 
       <ConfirmDialog
-        open={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        onConfirm={handleDelete}
-        loading={deleting}
-        title="Move to Trash"
-        description="This student will be moved to trash. You can restore them later."
-        confirmLabel="Move to Trash"
+        open={!!deactivateTarget}
+        onClose={() => setDeactivateTarget(null)}
+        onConfirm={handleDeactivate}
+        loading={deactivating}
+        title="Deactivate Student"
+        description="This student will be marked inactive and hidden from the active list. You can restore them later — nothing is deleted."
+        confirmLabel="Deactivate"
       />
     </div>
   );

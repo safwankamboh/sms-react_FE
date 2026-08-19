@@ -2,8 +2,15 @@ import type { AuthUser } from './auth'
 import type { NewClass, ClassSection } from './class'
 import type { AcademicYear } from './academicYear'
 
+// Permanent lifecycle status — separate from an enrollment's own
+// active/completed/withdrawn/transferred_out status for one academic year
+// (see backend Phase 4b plan §7).
+export type StudentStatus = 'active' | 'inactive' | 'transferred' | 'withdrawn' | 'graduated'
+
 export interface Student {
   Id: number
+  GrNumber: string
+  Status: StudentStatus
   UserId: number | null
   AcademicYearId: number
   FirstName: string
@@ -24,7 +31,6 @@ export interface Student {
   Photo: string | null
   BirthOrNic: string | null
   LastSchoolCertificate: string | null
-  DeletedAt: string | null
   CreatedAt: string
   UpdatedAt: string
   User?: AuthUser

@@ -1,13 +1,25 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Edit2 } from 'lucide-react'
+import { ArrowLeft, Edit2, History, ShieldAlert, Hash } from 'lucide-react'
 import { useGetStudentProfileQuery } from '../../store/api/studentsApi'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import Badge from '../../components/common/Badge'
+import Can from '../../components/common/Can'
 import Loader from '../../components/common/Loader'
 import PageHeader from '../../components/common/PageHeader'
+import ChangeStudentStatusModal from '../../components/students/ChangeStudentStatusModal'
+import CorrectGrNumberModal from '../../components/students/CorrectGrNumberModal'
+import type { StudentStatus } from '../../types'
 import { formatDate, getInitials } from '../../utils/helpers'
+
+const STATUS_BADGE_VARIANT: Record<StudentStatus, 'success' | 'default' | 'info' | 'warning'> = {
+  active: 'success',
+  inactive: 'default',
+  transferred: 'info',
+  withdrawn: 'warning',
+  graduated: 'success',
+}
 
 function Field({ label, value }: { label: string; value: string | number | null | undefined }) {
   return (
@@ -22,6 +34,8 @@ function StudentProfilePage() {
   const { classId, studentId } = useParams()
   const navigate = useNavigate()
   const { data: student, isFetching: loading, isError } = useGetStudentProfileQuery({ classId: Number(classId), studentId: Number(studentId) })
+  const [statusModalOpen, setStatusModalOpen] = useState(false)
+  const [grNumberModalOpen, setGrNumberModalOpen] = useState(false)
 
   useEffect(() => {
     if (isError) navigate('/students')
@@ -40,6 +54,9 @@ function StudentProfilePage() {
         actions={
           <div className="flex gap-2">
             <Button variant="secondary" icon={<ArrowLeft size={16} />} onClick={() => navigate('/students')}>Back</Button>
+            <Can permission="students.view_profile">
+              <Button variant="secondary" icon={<History size={16} />} onClick={() => navigate(`/students/${classId}/${studentId}/history`)}>History</Button>
+            </Can>
             <Button icon={<Edit2 size={16} />} onClick={() => navigate(`/students/${classId}/${studentId}/edit`)}>Edit</Button>
           </div>
         }
@@ -51,16 +68,40 @@ function StudentProfilePage() {
             {getInitials(fullName)}
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">{fullName}</h2>
-            <p className="text-sm text-slate-500">{student.User?.Email ?? '—'}</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-xl font-bold text-slate-900">{fullName}</h2>
+              <Badge variant={STATUS_BADGE_VARIANT[student.Status]}>{student.Status}</Badge>
+            </div>
+            <p className="text-sm text-slate-500">{student.GrNumber} · {student.User?.Email ?? '—'}</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {student.Class && <Badge>{student.Class.ClassName}</Badge>}
               {student.Section && <Badge variant="info">{student.Section.SectionName}</Badge>}
               {student.Gender && <Badge variant="default">{student.Gender}</Badge>}
             </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Can permission="students.change_status">
+                <Button size="sm" variant="secondary" icon={<ShieldAlert size={14} />} onClick={() => setStatusModalOpen(true)}>Change Status</Button>
+              </Can>
+              <Can permission="students.correct_gr_number">
+                <Button size="sm" variant="secondary" icon={<Hash size={14} />} onClick={() => setGrNumberModalOpen(true)}>Correct GR Number</Button>
+              </Can>
+            </div>
           </div>
         </div>
       </Card>
+
+      <ChangeStudentStatusModal
+        open={statusModalOpen}
+        onClose={() => setStatusModalOpen(false)}
+        studentId={student.Id}
+        currentStatus={student.Status}
+      />
+      <CorrectGrNumberModal
+        open={grNumberModalOpen}
+        onClose={() => setGrNumberModalOpen(false)}
+        studentId={student.Id}
+        currentGrNumber={student.GrNumber}
+      />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="p-5 sm:p-6">

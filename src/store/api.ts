@@ -43,6 +43,7 @@ export const api = createApi({
     'Course', 'CourseTrash', 'AssignedCourse',
     'OtherExpense', 'TeacherSalary', 'StudentFee',
     'ExamType', 'ExamSchedule',
+    'AcademicYearRollover',
   ],
   endpoints: () => ({}),
 })

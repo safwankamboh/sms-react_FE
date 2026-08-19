@@ -15,16 +15,22 @@ import {
   BookMarked,
   Banknote,
   TrendingDown,
+  Repeat,
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { APP_NAME } from '../../utils/constants'
 import { classNames } from '../../utils/helpers'
+import { usePermission } from '../../hooks/usePermission'
 
 interface NavItem {
   name: string
   to: string
   icon: React.ElementType
   end?: boolean
+  // Only set for items that need real gating (Phase 4c — the first
+  // precedent for a permission-gated nav item in this file). Absent means
+  // "always visible," matching every pre-existing item's behavior exactly.
+  permission?: string
 }
 
 interface NavGroup {
@@ -68,9 +74,38 @@ const navGroups: NavGroup[] = [
       { name: 'Tution Fee', to: '/administrator/tuition-fee', icon: DollarSign },
       { name: 'Create New Class', to: '/administrator/classes/create', icon: Building2 },
       { name: 'Break Schedule', to: '/administrator/break-schedule', icon: ClipboardList },
+      { name: 'Promote Students', to: '/administrator/academic-years/rollover', icon: Repeat, permission: 'students.promote' },
     ],
   },
 ]
+
+// Its own component so `usePermission` is called from a real component
+// function, not inside the `.map()` below — first precedent for a
+// permission-gated nav item in this file (see NavItem.permission above).
+function NavLinkItem({ item, onClose }: { item: NavItem; onClose?: () => void }) {
+  const allowed = usePermission(item.permission ?? '')
+  if (item.permission && !allowed) return null
+
+  const Icon = item.icon
+  return (
+    <NavLink
+      to={item.to}
+      end={item.end}
+      onClick={onClose}
+      className={({ isActive }) =>
+        classNames(
+          'flex items-center gap-3 px-3 py-2 text-sm font-medium transition-colors',
+          isActive
+            ? 'bg-white text-black'
+            : 'text-slate-400 hover:bg-white/10 hover:text-white',
+        )
+      }
+    >
+      <Icon size={17} />
+      {item.name}
+    </NavLink>
+  )
+}
 
 function SidebarContent({ onClose }: { onClose?: () => void }) {
   return (
@@ -102,28 +137,9 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
               {group.label}
             </p>
             <div className="space-y-0.5">
-              {group.items.map((item) => {
-                const Icon = item.icon
-                return (
-                  <NavLink
-                    key={item.name}
-                    to={item.to}
-                    end={item.end}
-                    onClick={onClose}
-                    className={({ isActive }) =>
-                      classNames(
-                        'flex items-center gap-3 px-3 py-2 text-sm font-medium transition-colors',
-                        isActive
-                          ? 'bg-white text-black'
-                          : 'text-slate-400 hover:bg-white/10 hover:text-white',
-                      )
-                    }
-                  >
-                    <Icon size={17} />
-                    {item.name}
-                  </NavLink>
-                )
-              })}
+              {group.items.map((item) => (
+                <NavLinkItem key={item.name} item={item} onClose={onClose} />
+              ))}
             </div>
           </div>
         ))}

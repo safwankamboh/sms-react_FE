@@ -1,5 +1,5 @@
 import { api } from '../api'
-import type { AttendanceReport, NewClass, PaginationMeta, Student } from '../../types'
+import type { AttendanceReport, NewClass, PaginationMeta, Student, StudentHistory, StudentStatus } from '../../types'
 import { toPaginationMeta } from '../../utils/helpers'
 
 interface StudentEditResult {
@@ -20,8 +20,8 @@ interface SaveStudentResult {
 
 export const studentsApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getStudents: builder.query<{ data: Student[]; meta: PaginationMeta }, number>({
-      query: (page) => ({ url: '/student/students', method: 'GET', params: { page } }),
+    getStudents: builder.query<{ data: Student[]; meta: PaginationMeta }, { page: number; search?: string; status?: string }>({
+      query: ({ page, search, status }) => ({ url: '/student/students', method: 'GET', params: { page, search, status } }),
       transformResponse: (data: Student[], meta) => ({ data, meta: toPaginationMeta(meta?.Meta) }),
       providesTags: ['Student'],
     }),
@@ -71,6 +71,25 @@ export const studentsApi = api.injectEndpoints({
       invalidatesTags: ['Student', 'StudentTrash'],
     }),
 
+    // Phase 4b — lifecycle status change, distinct from the active/inactive
+    // toggle above: covers every transition (transferred/withdrawn/
+    // graduated too), with a required reason, gated behind its own
+    // students.change_status permission.
+    changeStudentStatus: builder.mutation<Student, { studentId: number; status: StudentStatus; reason?: string }>({
+      query: ({ studentId, ...body }) => ({ url: `/student/${studentId}/status`, method: 'POST', data: body }),
+      invalidatesTags: ['Student', 'StudentTrash'],
+    }),
+
+    correctGrNumber: builder.mutation<Student, { studentId: number; gr_number: string; reason: string }>({
+      query: ({ studentId, ...body }) => ({ url: `/student/${studentId}/gr-number`, method: 'PATCH', data: body }),
+      invalidatesTags: ['Student'],
+    }),
+
+    getStudentHistory: builder.query<StudentHistory, number>({
+      query: (studentId) => ({ url: `/student/${studentId}/history`, method: 'GET' }),
+      providesTags: ['Student'],
+    }),
+
     submitAttendance: builder.mutation<void, { classId: string; sectionId: string; date: string; attendance: { student_id: number; status: string }[] }>({
       query: ({ classId, ...body }) => ({
         url: `/student/attendance-monitring/attendance-sheet/class/${classId}/attendance-submit`,
@@ -100,6 +119,9 @@ export const {
   useUpdateStudentMutation,
   useSoftDeleteStudentMutation,
   useRestoreStudentMutation,
+  useChangeStudentStatusMutation,
+  useCorrectGrNumberMutation,
+  useGetStudentHistoryQuery,
   useSubmitAttendanceMutation,
   useGetAttendanceReportQuery,
 } = studentsApi

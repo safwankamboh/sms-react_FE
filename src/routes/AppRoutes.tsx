@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import ProtectedRoute from './ProtectedRoute'
 import RequireAcademicYear from './RequireAcademicYear'
+import RequirePermission from './RequirePermission'
 import LoginPage from '../pages/auth/LoginPage'
 import SelectAcademicYearPage from '../pages/auth/SelectAcademicYearPage'
 import SettingsPage from '../pages/settings/SettingsPage'
@@ -10,6 +11,7 @@ import StudentsPage from '../pages/students/StudentsPage'
 import StudentCreatePage from '../pages/students/StudentCreatePage'
 import StudentEditPage from '../pages/students/StudentEditPage'
 import StudentProfilePage from '../pages/students/StudentProfilePage'
+import StudentHistoryPage from '../pages/students/StudentHistoryPage'
 import AttendancePage from '../pages/students/AttendancePage'
 import AttendanceReportPage from '../pages/students/AttendanceReportPage'
 import TeachersPage from '../pages/teachers/TeachersPage'
@@ -18,6 +20,7 @@ import TeacherProfilePage from '../pages/teachers/TeacherProfilePage'
 import ClassesPage from '../pages/classes/ClassesPage'
 import ClassCreatePage from '../pages/administrator/ClassCreatePage'
 import ManageClassFeePage from '../pages/administrator/ManageClassFeePage'
+import AcademicYearRolloverPage from '../pages/administrator/AcademicYearRolloverPage'
 import AcademicYearsPage from '../pages/administrator/AcademicYearsPage'
 import AcademicYearCreatePage from '../pages/administrator/AcademicYearCreatePage'
 import TuitionFeeGeneratePage from '../pages/administrator/TuitionFeeGeneratePage'
@@ -49,6 +52,7 @@ function AppRoutes() {
             <Route path="students/create" element={<StudentCreatePage />} />
             <Route path="students/:classId/:studentId/edit" element={<StudentEditPage />} />
             <Route path="students/:classId/:studentId/profile" element={<StudentProfilePage />} />
+            <Route path="students/:classId/:studentId/history" element={<StudentHistoryPage />} />
             <Route path="attendance" element={<AttendancePage />} />
             <Route path="attendance/report/:classId" element={<AttendanceReportPage />} />
 
@@ -65,6 +69,10 @@ function AppRoutes() {
             <Route path="administrator/academic-years/create" element={<AcademicYearCreatePage />} />
             <Route path="administrator/tuition-fee" element={<TuitionFeeGeneratePage />} />
             <Route path="administrator/break-schedule" element={<BreakSchedulePage />} />
+
+            <Route element={<RequirePermission permission="students.promote" />}>
+              <Route path="administrator/academic-years/rollover" element={<AcademicYearRolloverPage />} />
+            </Route>
 
             <Route path="courses" element={<CoursesPage />} />
             <Route path="manage-courses" element={<AssignCoursesPage />} />
